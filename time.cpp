@@ -3,6 +3,7 @@
 const int morning = 1;
 const int day = 2;
 const int evening = 3;
+const int night = 4;
 const int hours_limit_l = 0;
 const int hours_limit_r = 23;
 const int minutes_limit_l = 0;
@@ -21,7 +22,7 @@ const int minute_case_1 = 1;
 const int minute_case_2 = 2;
 const int minute_case_3 = 3;
 const int minute_case_4 = 4;
-const int exception = 11;
+const int exception = 10;
 const int midday = 12;
 const int ten = 10;
 
@@ -34,13 +35,13 @@ bool is_correct_time(int hours, int minutes) {
 
 int time_of_day(int hours) {
     if (hours >= morning_l && hours < morning_r) {
-        return 1;
+        return morning;
     } else if (hours >= day_l && hours < day_r) {
-        return 2;
+        return day;
     } else if (hours >= evening_l && hours <= evening_r) {
-        return 3;
+        return evening;
     }
-    return 4;
+    return night;
 }
 
 void hours_case(int hours) {
@@ -54,9 +55,10 @@ void hours_case(int hours) {
 }
 
 void there_are_minutes(int minutes) {
-    if (minutes % ten == minute_case_1 && minutes != exception) {
+    if (minutes % ten == minute_case_1 && minutes - minutes % ten != exception) {
         std::cout << "минута ";
-    } else if (minutes % ten == minute_case_2 || minutes % ten == minute_case_3 || minutes % ten == minute_case_4) {
+    } else if ((minutes % ten == minute_case_2 || minutes % ten == minute_case_3 || minutes % ten == minute_case_4) &&
+               minutes - minutes % ten != exception) {
         std::cout << "минуты ";
     } else {
         std::cout << "минут ";
@@ -90,7 +92,7 @@ void type_of_day_3(int time) {
 int main(int, char**) {
     int hours = 0;
     int minutes = 0;
-    int time = 4;
+    int time = morning;
     std::cin >> hours >> minutes;
 
     if (!is_correct_time(hours, minutes)) {
