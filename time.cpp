@@ -1,131 +1,111 @@
 #include <iostream>
 
 namespace {
-const int kMorning = 1;
-const int kDay = 2;
-const int kEvening = 3;
-const int kNight = 4;
-const int kHoursLimitL = 0;
-const int kHoursLimitR = 23;
-const int kMinutesLimitL = 0;
-const int kMinutesLimitR = 59;
-const int kMorningL = 5;
-const int kMorningR = 12;
-const int kDayL = 12;
-const int kDayR = 18;
-const int kEveningL = 18;
-const int kEveningR = 23;
-const int kHourCase1 = 1;
-const int kHourCase2 = 2;
-const int kHourCase3 = 3;
-const int kHourCase4 = 4;
-const int kMinuteCase1 = 1;
-const int kMinuteCase2 = 2;
-const int kMinuteCase3 = 3;
-const int kMinuteCase4 = 4;
-const int kException = 10;
-const int kMidday = 12;
-const int kTen = 10;
+const int kHoursLimitMin = 0;
+const int kHoursLimitMax = 23;
+const int kMinutesLimitMin = 0;
+const int kMinutesLimitMax = 59;
+
+const int kMorningBegin = 5;
+const int kMorningEnd = 11;
+const int kAfternoonBegin = 12;
+const int kAfternoonEnd = 17;
+const int kEveningBegin = 18;
+const int kEveningEnd = 23;
+const int kNightBegin = 0;
+const int kNightEnd = 4;
+
+const int kHourInSingular = 1;
+const int kHoursInPluralMin = 2;
+const int kHoursInPluralMax = 4;
+
+const int kGenitiveMinutesMin = 11;
+const int kGenitiveMinutesMax = 14;
+
+const int kMiddayHours = 12;
+const int kMidnightHours = 0;
+const int kMiddayMinutes = 0;
+const int kMidnightMinutes = 0;
+
+const int kDecimalBase = 10;
 }  // namespace
 
-bool is_correct_time(int hours, int minutes) {
-    if (hours >= kHoursLimitL && hours <= kHoursLimitR && minutes >= kMinutesLimitL && minutes <= kMinutesLimitR) {
-        return true;
-    }
-    return false;
+bool IsCorrectInput(int hours, int minutes) {
+    return hours >= kHoursLimitMin && hours <= kHoursLimitMax && minutes >= kMinutesLimitMin && minutes <= kMinutesLimitMax;
 }
 
-int time_of_day(int hours) {
-    if (hours >= kMorningL && hours < kMorningR) {
-        return kMorning;
-    } else if (hours >= kDayL && hours < kDayR) {
-        return kDay;
-    } else if (hours >= kEveningL && hours <= kEveningR) {
-        return kEvening;
-    }
-    return kNight;
-}
-
-void hours_case(int hours) {
-    if (hours == kHourCase1) {
-        std::cout << "час ";
-    } else if (hours == kHourCase2 || hours == kHourCase3 || hours == kHourCase4) {
-        std::cout << "часа ";
+void TheFormOfTheWorldHour(int hours) {
+    if (hours == kHourInSingular) {
+        std::cout << " час";
+    } else if (hours >= kHoursInPluralMin && hours <= kHoursInPluralMax) {
+        std::cout << " часа";
     } else {
-        std::cout << "часов ";
+        std::cout << " часов";
     }
 }
 
-void there_are_minutes(int minutes) {
-    if (minutes % kTen == kMinuteCase1 && minutes - minutes % kTen != kException) {
-        std::cout << "минута ";
-    } else if ((minutes % kTen == kMinuteCase2 || minutes % kTen == kMinuteCase3 || minutes % kTen == kMinuteCase4) &&
-               minutes - minutes % kTen != kException) {
-        std::cout << "минуты ";
-    } else {
-        std::cout << "минут ";
+void PartOfDay(int hours) {
+    if (hours >= kMorningBegin && hours <= kMorningEnd) {
+        std::cout << " утра";
+    } else if (hours >= kAfternoonBegin && hours <= kAfternoonEnd) {
+        std::cout << " дня";
+    } else if (hours >= kEveningBegin && hours <= kEveningEnd) {
+        std::cout << " вечера";
+    } else if (hours >= kNightBegin && hours <= kNightEnd) {
+        std::cout << " ночи";
     }
 }
 
-void type_of_day_2(int time) {
-    if (time == kMorning) {
-        std::cout << "утра" << std::endl;
-    } else if (time == kDay) {
-        std::cout << "дня" << std::endl;
-    } else if (time == kEvening) {
-        std::cout << "вечера" << std::endl;
+void TheFormOfTheWorldMinute(int minutes) {
+    if (minutes % kDecimalBase == 1 && minutes != kGenitiveMinutesMin) {
+        std::cout << " минута";
+    } else if ((minutes % kDecimalBase == 2 || minutes % kDecimalBase == 3 || minutes % kDecimalBase == 4) &&
+               (minutes <= kGenitiveMinutesMin || minutes > kGenitiveMinutesMax)) {
+        std::cout << " минуты";
     } else {
-        std::cout << "ночи" << std::endl;
-    }
-}
-
-void type_of_day_3(int time) {
-    if (time == kMorning) {
-        std::cout << "утра";
-    } else if (time == kDay) {
-        std::cout << "дня";
-    } else if (time == kEvening) {
-        std::cout << "вечера";
-    } else {
-        std::cout << "ночи";
+        std::cout << " минут";
     }
 }
 
 int main(int, char**) {
+    std::cout << "Введите часы и минуты через пробел" << std::endl;
     int hours = 0;
     int minutes = 0;
-    int time = kMorning;
     std::cin >> hours >> minutes;
 
-    if (!is_correct_time(hours, minutes)) {
-        std::cout << "введены недопустимые данные" << std::endl;
-        return 0;
+    if (!IsCorrectInput(hours, minutes)) {
+        std::cout << "введены недопустимые данные, количество часов должно быть от 0 до 23 включительно, "
+                     "количество минут должно быть от 0 до 59 включительно"
+                  << std::endl;
+        return 1;
     }
 
-    if (hours == kMidday && minutes == 0) {
+    if (hours == kMiddayHours && minutes == kMiddayMinutes) {
         std::cout << "полдень" << std::endl;
         return 0;
     }
 
-    if (hours == 0 && minutes == 0) {
+    if (hours == kMidnightHours && minutes == kMidnightMinutes) {
         std::cout << "полночь" << std::endl;
         return 0;
     }
 
-    time = time_of_day(hours);
-    if (hours > kMidday) {
-        hours -= kMidday;
+    int HoursInFormatFrom1To12 = hours;
+    if (hours > kMiddayHours) {
+        HoursInFormatFrom1To12 -= kMiddayHours;
     }
-    std::cout << hours << " ";
-    hours_case(hours);
+    std::cout << HoursInFormatFrom1To12;
 
-    if (minutes != 0) {
-        std::cout << minutes << " ";
-        there_are_minutes(minutes);
-        type_of_day_2(time);
-    } else {
-        type_of_day_3(time);
+    TheFormOfTheWorldHour(HoursInFormatFrom1To12);
+
+    if (minutes == 0) {
+        PartOfDay(hours);
         std::cout << " ровно" << std::endl;
+    } else if (minutes >= kMinutesLimitMin && minutes <= kMinutesLimitMax) {
+        std::cout << " " << minutes;
+        TheFormOfTheWorldMinute(minutes);
+        PartOfDay(hours);
+        std::cout << std::endl;
     }
 
     return 0;
