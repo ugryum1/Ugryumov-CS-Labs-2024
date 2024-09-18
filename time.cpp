@@ -1,53 +1,55 @@
 #include <iostream>
 
-const int morning = 1;
-const int day = 2;
-const int evening = 3;
-const int night = 4;
-const int hours_limit_l = 0;
-const int hours_limit_r = 23;
-const int minutes_limit_l = 0;
-const int minutes_limit_r = 59;
-const int morning_l = 5;
-const int morning_r = 12;
-const int day_l = 12;
-const int day_r = 18;
-const int evening_l = 18;
-const int evening_r = 23;
-const int hour_case_1 = 1;
-const int hour_case_2 = 2;
-const int hour_case_3 = 3;
-const int hour_case_4 = 4;
-const int minute_case_1 = 1;
-const int minute_case_2 = 2;
-const int minute_case_3 = 3;
-const int minute_case_4 = 4;
-const int exception = 10;
-const int midday = 12;
-const int ten = 10;
+namespace {
+const int kMorning = 1;
+const int kDay = 2;
+const int kEvening = 3;
+const int kNight = 4;
+const int kHoursLimitL = 0;
+const int kHoursLimitR = 23;
+const int kMinutesLimitL = 0;
+const int kMinutesLimitR = 59;
+const int kMorningL = 5;
+const int kMorningR = 12;
+const int kDayL = 12;
+const int kDayR = 18;
+const int kEveningL = 18;
+const int kEveningR = 23;
+const int kHourCase1 = 1;
+const int kHourCase2 = 2;
+const int kHourCase3 = 3;
+const int kHourCase4 = 4;
+const int kMinuteCase1 = 1;
+const int kMinuteCase2 = 2;
+const int kMinuteCase3 = 3;
+const int kMinuteCase4 = 4;
+const int kException = 10;
+const int kMidday = 12;
+const int kTen = 10;
+}  // namespace
 
 bool is_correct_time(int hours, int minutes) {
-    if (hours >= hours_limit_l && hours <= hours_limit_r && minutes >= minutes_limit_l && minutes <= minutes_limit_r) {
+    if (hours >= kHoursLimitL && hours <= kHoursLimitR && minutes >= kMinutesLimitL && minutes <= kMinutesLimitR) {
         return true;
     }
     return false;
 }
 
 int time_of_day(int hours) {
-    if (hours >= morning_l && hours < morning_r) {
-        return morning;
-    } else if (hours >= day_l && hours < day_r) {
-        return day;
-    } else if (hours >= evening_l && hours <= evening_r) {
-        return evening;
+    if (hours >= kMorningL && hours < kMorningR) {
+        return kMorning;
+    } else if (hours >= kDayL && hours < kDayR) {
+        return kDay;
+    } else if (hours >= kEveningL && hours <= kEveningR) {
+        return kEvening;
     }
-    return night;
+    return kNight;
 }
 
 void hours_case(int hours) {
-    if (hours == hour_case_1) {
+    if (hours == kHourCase1) {
         std::cout << "час ";
-    } else if (hours == hour_case_2 || hours == hour_case_3 || hours == hour_case_4) {
+    } else if (hours == kHourCase2 || hours == kHourCase3 || hours == kHourCase4) {
         std::cout << "часа ";
     } else {
         std::cout << "часов ";
@@ -55,10 +57,10 @@ void hours_case(int hours) {
 }
 
 void there_are_minutes(int minutes) {
-    if (minutes % ten == minute_case_1 && minutes - minutes % ten != exception) {
+    if (minutes % kTen == kMinuteCase1 && minutes - minutes % kTen != kException) {
         std::cout << "минута ";
-    } else if ((minutes % ten == minute_case_2 || minutes % ten == minute_case_3 || minutes % ten == minute_case_4) &&
-               minutes - minutes % ten != exception) {
+    } else if ((minutes % kTen == kMinuteCase2 || minutes % kTen == kMinuteCase3 || minutes % kTen == kMinuteCase4) &&
+               minutes - minutes % kTen != kException) {
         std::cout << "минуты ";
     } else {
         std::cout << "минут ";
@@ -66,11 +68,11 @@ void there_are_minutes(int minutes) {
 }
 
 void type_of_day_2(int time) {
-    if (time == morning) {
+    if (time == kMorning) {
         std::cout << "утра" << std::endl;
-    } else if (time == day) {
+    } else if (time == kDay) {
         std::cout << "дня" << std::endl;
-    } else if (time == evening) {
+    } else if (time == kEvening) {
         std::cout << "вечера" << std::endl;
     } else {
         std::cout << "ночи" << std::endl;
@@ -78,11 +80,11 @@ void type_of_day_2(int time) {
 }
 
 void type_of_day_3(int time) {
-    if (time == morning) {
+    if (time == kMorning) {
         std::cout << "утра";
-    } else if (time == day) {
+    } else if (time == kDay) {
         std::cout << "дня";
-    } else if (time == evening) {
+    } else if (time == kEvening) {
         std::cout << "вечера";
     } else {
         std::cout << "ночи";
@@ -92,7 +94,7 @@ void type_of_day_3(int time) {
 int main(int, char**) {
     int hours = 0;
     int minutes = 0;
-    int time = morning;
+    int time = kMorning;
     std::cin >> hours >> minutes;
 
     if (!is_correct_time(hours, minutes)) {
@@ -100,7 +102,7 @@ int main(int, char**) {
         return 0;
     }
 
-    if (hours == midday && minutes == 0) {
+    if (hours == kMidday && minutes == 0) {
         std::cout << "полдень" << std::endl;
         return 0;
     }
@@ -111,8 +113,8 @@ int main(int, char**) {
     }
 
     time = time_of_day(hours);
-    if (hours > midday) {
-        hours -= midday;
+    if (hours > kMidday) {
+        hours -= kMidday;
     }
     std::cout << hours << " ";
     hours_case(hours);
