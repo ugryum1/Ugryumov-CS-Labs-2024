@@ -15,12 +15,15 @@ const int kEveningEnd = 23;
 const int kNightBegin = 0;
 const int kNightEnd = 4;
 
-const int kHourInSingular = 1;
-const int kHoursInPluralMin = 2;
-const int kHoursInPluralMax = 4;
+const int kNomitiveSingularHours = 1;
+const int kGenitiveSingularHoursMin = 2;
+const int kGenitiveSingularHoursMax = 4;
 
-const int kGenitiveMinutesMin = 11;
-const int kGenitiveMinutesMax = 14;
+const int kGenitivePluralMinutesMin = 11;
+const int kGenitivePluralMinutesMax = 14;
+const int kNomitiveSingularMinutes = 1;
+const int kGenitiveSingularMinutesMin = 2;
+const int kGenitiveSingularMinutesMax = 4;
 
 const int kMiddayHours = 12;
 const int kMidnightHours = 0;
@@ -35,12 +38,24 @@ bool IsCorrectInput(int hours, int minutes) {
 }
 
 void TheFormOfTheWorldHour(int hours) {
-    if (hours == kHourInSingular) {
-        std::cout << " час";
-    } else if (hours >= kHoursInPluralMin && hours <= kHoursInPluralMax) {
-        std::cout << " часа";
-    } else {
+    if (hours != kNomitiveSingularHours && (hours < kGenitiveSingularHoursMin || hours > kGenitiveSingularHoursMax)) {
         std::cout << " часов";
+    } else if (hours == kNomitiveSingularHours) {
+        std::cout << " час";
+    } else if (hours >= kGenitiveSingularHoursMin && hours <= kGenitiveSingularHoursMax) {
+        std::cout << " часа";
+    }
+}
+
+void TheFormOfTheWorldMinute(int minutes) {
+    if ((minutes >= kGenitivePluralMinutesMin && minutes <= kGenitivePluralMinutesMax) ||
+        (minutes % kDecimalBase != kNomitiveSingularMinutes &&
+         (minutes % kDecimalBase < kGenitiveSingularMinutesMin || minutes % kDecimalBase > kGenitiveSingularMinutesMax))) {
+        std::cout << " минут";
+    } else if (minutes % kDecimalBase == kNomitiveSingularMinutes) {
+        std::cout << " минута";
+    } else if (minutes % kDecimalBase >= kGenitiveSingularMinutesMin && minutes % kDecimalBase <= kGenitiveSingularMinutesMax) {
+        std::cout << " минуты";
     }
 }
 
@@ -53,17 +68,6 @@ void PartOfDay(int hours) {
         std::cout << " вечера";
     } else if (hours >= kNightBegin && hours <= kNightEnd) {
         std::cout << " ночи";
-    }
-}
-
-void TheFormOfTheWorldMinute(int minutes) {
-    if (minutes % kDecimalBase == 1 && minutes != kGenitiveMinutesMin) {
-        std::cout << " минута";
-    } else if ((minutes % kDecimalBase == 2 || minutes % kDecimalBase == 3 || minutes % kDecimalBase == 4) &&
-               (minutes <= kGenitiveMinutesMin || minutes > kGenitiveMinutesMax)) {
-        std::cout << " минуты";
-    } else {
-        std::cout << " минут";
     }
 }
 
