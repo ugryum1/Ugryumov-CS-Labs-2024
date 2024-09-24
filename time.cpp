@@ -37,7 +37,7 @@ bool IsCorrectInput(int hours, int minutes) {
     return hours >= kHoursLimitMin && hours <= kHoursLimitMax && minutes >= kMinutesLimitMin && minutes <= kMinutesLimitMax;
 }
 
-void TheFormOfTheWorldHour(int hours) {
+void PrintFormOfTheWorldHour(int hours) {
     if (hours != kNomitiveSingularHours && (hours < kGenitiveSingularHoursMin || hours > kGenitiveSingularHoursMax)) {
         std::cout << " часов";
     } else if (hours == kNomitiveSingularHours) {
@@ -47,7 +47,7 @@ void TheFormOfTheWorldHour(int hours) {
     }
 }
 
-void TheFormOfTheWorldMinute(int minutes) {
+void PrintFormOfTheWorldMinute(int minutes) {
     if ((minutes >= kGenitivePluralMinutesMin && minutes <= kGenitivePluralMinutesMax) ||
         (minutes % kDecimalBase != kNomitiveSingularMinutes &&
          (minutes % kDecimalBase < kGenitiveSingularMinutesMin || minutes % kDecimalBase > kGenitiveSingularMinutesMax))) {
@@ -59,7 +59,7 @@ void TheFormOfTheWorldMinute(int minutes) {
     }
 }
 
-void PartOfDay(int hours) {
+void PrintPartOfDay(int hours) {
     if (hours >= kMorningBegin && hours <= kMorningEnd) {
         std::cout << " утра";
     } else if (hours >= kAfternoonBegin && hours <= kAfternoonEnd) {
@@ -72,7 +72,9 @@ void PartOfDay(int hours) {
 }
 
 int main(int, char**) {
-    std::cout << "Введите часы и минуты через пробел" << std::endl;
+    std::cout << "Введите текущее время (количество часов от 0 до 23 включительно и "
+                 "количество минут от 0 до 59 включительно через пробел)"
+              << std::endl;
     int hours = 0;
     int minutes = 0;
     std::cin >> hours >> minutes;
@@ -100,15 +102,15 @@ int main(int, char**) {
     }
     std::cout << HoursInFormatFrom1To12;
 
-    TheFormOfTheWorldHour(HoursInFormatFrom1To12);
+    PrintFormOfTheWorldHour(HoursInFormatFrom1To12);
 
     if (minutes == 0) {
-        PartOfDay(hours);
+        PrintPartOfDay(hours);
         std::cout << " ровно" << std::endl;
     } else if (minutes >= kMinutesLimitMin && minutes <= kMinutesLimitMax) {
         std::cout << " " << minutes;
-        TheFormOfTheWorldMinute(minutes);
-        PartOfDay(hours);
+        PrintFormOfTheWorldMinute(minutes);
+        PrintPartOfDay(hours);
         std::cout << std::endl;
     }
 
