@@ -19,11 +19,11 @@ const int kNominativeSingularHours = 1;
 const int kGenitiveSingularHoursBegin = 2;
 const int kGenitiveSingularHoursEnd = 4;
 
-const int kGenitivePluralMinutesBegin = 11;
-const int kGenitivePluralMinutesEnd = 14;
 const int kNominativeSingularMinutes = 1;
 const int kGenitiveSingularMinutesBegin = 2;
 const int kGenitiveSingularMinutesEnd = 4;
+const int kGenitivePluralMinutesBegin = 11;
+const int kGenitivePluralMinutesEnd = 14;
 
 const int kMiddayHours = 12;
 const int kMidnightHours = 0;
