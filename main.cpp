@@ -6,8 +6,11 @@ const char kFirstTaskNumber = '1';
 const char kSecondTaskNumber = '2';
 const char kThirdTaskNumber = '3';
 const char kFourthTaskNumber = '4';
+
 const char kExitProgramSymbol = 'e';
 const char kContinueProgramSymbol = 'y';
+
+const int kFive = 5;
 }  // namespace
 
 void TaskSelection();
@@ -36,7 +39,7 @@ void DoFirstTask() {
     std::cin >> n >> m;
 
     int answer = 0;
-    for (int i = 0; i <= n; i += 5) {
+    for (int i = 0; i <= n; i += kFive) {
         if (i % m != 0) {
             answer += i;
         }
