@@ -16,8 +16,8 @@ const int kNightBegin = 0;
 const int kNightEnd = 4;
 
 const int kNominativeSingularHours = 1;
-const int kGenitiveSingularHoursMin = 2;
-const int kGenitiveSingularHoursMax = 4;
+const int kGenitiveSingularHoursBegin = 2;
+const int kGenitiveSingularHoursEnd = 4;
 
 const int kGenitivePluralMinutesBegin = 11;
 const int kGenitivePluralMinutesEnd = 14;
@@ -45,11 +45,11 @@ void PrintHours(int hours) {
     }
     std::cout << hours;
 
-    if (hours != kNominativeSingularHours && (hours < kGenitiveSingularHoursMin || hours > kGenitiveSingularHoursMax)) {
+    if (hours != kNominativeSingularHours && (hours < kGenitiveSingularHoursBegin || hours > kGenitiveSingularHoursEnd)) {
         std::cout << " часов";
     } else if (hours == kNominativeSingularHours) {
         std::cout << " час";
-    } else if (hours >= kGenitiveSingularHoursMin && hours <= kGenitiveSingularHoursMax) {
+    } else if (hours >= kGenitiveSingularHoursBegin && hours <= kGenitiveSingularHoursEnd) {
         std::cout << " часа";
     }
 }
