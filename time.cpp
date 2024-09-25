@@ -15,20 +15,22 @@ const int kEveningEnd = 23;
 const int kNightBegin = 0;
 const int kNightEnd = 4;
 
-const int kNomitiveSingularHours = 1;
+const int kNominativeSingularHours = 1;
 const int kGenitiveSingularHoursMin = 2;
 const int kGenitiveSingularHoursMax = 4;
 
-const int kGenitivePluralMinutesMin = 11;
-const int kGenitivePluralMinutesMax = 14;
-const int kNomitiveSingularMinutes = 1;
-const int kGenitiveSingularMinutesMin = 2;
-const int kGenitiveSingularMinutesMax = 4;
+const int kGenitivePluralMinutesBegin = 11;
+const int kGenitivePluralMinutesEnd = 14;
+const int kNominativeSingularMinutes = 1;
+const int kGenitiveSingularMinutesBegin = 2;
+const int kGenitiveSingularMinutesEnd = 4;
 
 const int kMiddayHours = 12;
 const int kMidnightHours = 0;
 const int kMiddayMinutes = 0;
 const int kMidnightMinutes = 0;
+
+const int kHourBeginMinutes = 0;
 
 const int kDecimalBase = 10;
 }  // namespace
@@ -37,24 +39,33 @@ bool IsCorrectInput(int hours, int minutes) {
     return hours >= kHoursLimitMin && hours <= kHoursLimitMax && minutes >= kMinutesLimitMin && minutes <= kMinutesLimitMax;
 }
 
-void PrintFormOfTheWorldHour(int hours) {
-    if (hours != kNomitiveSingularHours && (hours < kGenitiveSingularHoursMin || hours > kGenitiveSingularHoursMax)) {
+void PrintHours(int hours) {
+    if (hours > kMiddayHours) {
+        hours -= kMiddayHours;
+    }
+    std::cout << hours;
+
+    if (hours != kNominativeSingularHours && (hours < kGenitiveSingularHoursMin || hours > kGenitiveSingularHoursMax)) {
         std::cout << " часов";
-    } else if (hours == kNomitiveSingularHours) {
+    } else if (hours == kNominativeSingularHours) {
         std::cout << " час";
     } else if (hours >= kGenitiveSingularHoursMin && hours <= kGenitiveSingularHoursMax) {
         std::cout << " часа";
     }
 }
 
-void PrintFormOfTheWorldMinute(int minutes) {
-    if ((minutes >= kGenitivePluralMinutesMin && minutes <= kGenitivePluralMinutesMax) ||
-        (minutes % kDecimalBase != kNomitiveSingularMinutes &&
-         (minutes % kDecimalBase < kGenitiveSingularMinutesMin || minutes % kDecimalBase > kGenitiveSingularMinutesMax))) {
+void PrintMinutes(int minutes) {
+    std::cout << " " << minutes;
+
+    int lastDigitMinutes = minutes % kDecimalBase;
+
+    if ((minutes >= kGenitivePluralMinutesBegin && minutes <= kGenitivePluralMinutesEnd) ||
+        (lastDigitMinutes != kNominativeSingularMinutes &&
+         (lastDigitMinutes < kGenitiveSingularMinutesBegin || lastDigitMinutes > kGenitiveSingularMinutesEnd))) {
         std::cout << " минут";
-    } else if (minutes % kDecimalBase == kNomitiveSingularMinutes) {
+    } else if (lastDigitMinutes == kNominativeSingularMinutes) {
         std::cout << " минута";
-    } else if (minutes % kDecimalBase >= kGenitiveSingularMinutesMin && minutes % kDecimalBase <= kGenitiveSingularMinutesMax) {
+    } else if (lastDigitMinutes >= kGenitiveSingularMinutesBegin && lastDigitMinutes <= kGenitiveSingularMinutesEnd) {
         std::cout << " минуты";
     }
 }
@@ -72,7 +83,7 @@ void PrintPartOfDay(int hours) {
 }
 
 int main(int, char**) {
-    std::cout << "Введите текущее время (количество часов от 0 до 23 включительно и "
+    std::cout << "Введите время (количество часов от 0 до 23 включительно и "
                  "количество минут от 0 до 59 включительно через пробел)"
               << std::endl;
     int hours = 0;
@@ -96,23 +107,17 @@ int main(int, char**) {
         return 0;
     }
 
-    int HoursInFormatFrom1To12 = hours;
-    if (hours > kMiddayHours) {
-        HoursInFormatFrom1To12 -= kMiddayHours;
-    }
-    std::cout << HoursInFormatFrom1To12;
+    PrintHours(hours);
 
-    PrintFormOfTheWorldHour(HoursInFormatFrom1To12);
-
-    if (minutes == 0) {
+    if (minutes == kHourBeginMinutes) {
         PrintPartOfDay(hours);
-        std::cout << " ровно" << std::endl;
-    } else if (minutes >= kMinutesLimitMin && minutes <= kMinutesLimitMax) {
-        std::cout << " " << minutes;
-        PrintFormOfTheWorldMinute(minutes);
+        std::cout << " ровно";
+    } else {
+        PrintMinutes(minutes);
         PrintPartOfDay(hours);
-        std::cout << std::endl;
     }
+
+    std::cout << std::endl;
 
     return 0;
 }
