@@ -1,14 +1,14 @@
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 
 namespace {
-const char kFirstTaskNumber = '1';
-const char kSecondTaskNumber = '2';
-const char kThirdTaskNumber = '3';
-const char kFourthTaskNumber = '4';
-
-const char kExitProgram = 'e';
-const char kContinueProgram = 'y';
+const char kFirstTaskSymbol = '1';
+const char kSecondTaskSymbol = '2';
+const char kThirdTaskSymbol = '3';
+const char kFourthTaskSymbol = '4';
+const char kExitProgramSymbol = 'e';
+const char kContinueProgramSymbol = 'y';
 
 const int kBeginingCycleInFirstTask = 0;
 const int kCycleStepInFirstTask = 5;
@@ -33,7 +33,7 @@ bool SolveAgain() {
     char choice{};
     std::cin >> choice;
 
-    if (choice == kContinueProgram) {
+    if (choice == kContinueProgramSymbol) {
         return true;
     }
 
@@ -48,6 +48,7 @@ void DoFirstTask() {
     std::cin >> n >> m;
 
     int answer = 0;
+
     for (int i = kBeginingCycleInFirstTask; i <= n; i += kCycleStepInFirstTask) {
         if (i % m != kNotDivisionRemainder) {
             answer += i;
@@ -80,6 +81,7 @@ void DoSecondTask() {
             answer *= i * i - kStepCycleIfNegativeA;
         }
     }
+
     std::cout << "S = " << answer << std::endl;
 
     if (SolveAgain()) {
@@ -107,15 +109,15 @@ void TaskSelection() {
     char taskNumber{};
     std::cin >> taskNumber;
 
-    if (taskNumber == kFirstTaskNumber) {
+    if (taskNumber == kFirstTaskSymbol) {
         DoFirstTask();
-    } else if (taskNumber == kSecondTaskNumber) {
+    } else if (taskNumber == kSecondTaskSymbol) {
         DoSecondTask();
-    } else if (taskNumber == kThirdTaskNumber) {
+    } else if (taskNumber == kThirdTaskSymbol) {
         DoThirdTask();
-    } else if (taskNumber == kFourthTaskNumber) {
+    } else if (taskNumber == kFourthTaskSymbol) {
         DoFourthTask();
-    } else if (taskNumber == kExitProgram) {
+    } else if (taskNumber == kExitProgramSymbol) {
         return;
     } else {
         std::cout << "\nНеверный ввод, попробуйте заново.\n" << std::endl;
