@@ -1,6 +1,5 @@
 #include <cmath>
 #include <iostream>
-#include <iomanip>
 
 namespace {
 const char kFirstTaskSymbol = '1';
