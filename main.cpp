@@ -7,10 +7,21 @@ const char kSecondTaskNumber = '2';
 const char kThirdTaskNumber = '3';
 const char kFourthTaskNumber = '4';
 
-const char kExitProgramSymbol = 'e';
-const char kContinueProgramSymbol = 'y';
+const char kExitProgram = 'e';
+const char kContinueProgram = 'y';
 
-const int kFive = 5;
+const int kBeginingCycleInFirstTask = 0;
+const int kCycleStepInFirstTask = 5;
+const int kNotDivisionRemainder = 0;
+
+const int kPositiveNumbersBegin = 0;
+
+const int kBeginingCycleIfPositiveA = 2;
+const int kEndingCycleIfPositiveA = 8;
+const int kStepCycleIfPositiveA = 2;
+const int kBeginingCycleIfNegativeA = 3;
+const int kEndingCycleIfNegativeA = 9;
+const int kStepCycleIfNegativeA = 3;
 }  // namespace
 
 void TaskSelection();
@@ -21,13 +32,11 @@ bool SolveAgain() {
               << std::endl;
     char choice{};
     std::cin >> choice;
-    std::cout << std::endl;
 
-    if (choice == kContinueProgramSymbol) {
+    if (choice == kContinueProgram) {
         return true;
     }
 
-    std::cout << std::endl;
     TaskSelection();
     return false;
 }
@@ -35,17 +44,17 @@ bool SolveAgain() {
 void DoFirstTask() {
     int n{};
     int m{};
-    std::cout << "Введите натуральные числа n и m (m < n) через проблел." << std::endl;
+    std::cout << "\nВведите натуральные числа n и m (m < n) через проблел." << std::endl;
     std::cin >> n >> m;
 
     int answer = 0;
-    for (int i = 0; i <= n; i += kFive) {
-        if (i % m != 0) {
+    for (int i = kBeginingCycleInFirstTask; i <= n; i += kCycleStepInFirstTask) {
+        if (i % m != kNotDivisionRemainder) {
             answer += i;
         }
     }
 
-    std::cout << "Сумма натуральных чисел, делящихся на 5 и не делящихся на " << m
+    std::cout << "\nСумма натуральных чисел, делящихся на 5 и не делящихся на " << m
               << " одновременно, "
                  "на отрезке от 1 до "
               << n << " равна " << answer << "." << std::endl;
@@ -56,6 +65,23 @@ void DoFirstTask() {
 }
 
 void DoSecondTask() {
+    double a{};
+    std::cout << "\nВведите число a." << std::endl;
+    std::cin >> a;
+
+    double answer = 1;
+
+    if (a >= kPositiveNumbersBegin) {
+        for (int i = kBeginingCycleIfPositiveA; i <= kEndingCycleIfPositiveA; i += kStepCycleIfPositiveA) {
+            answer *= i * i - a;
+        }
+    } else {
+        for (int i = kBeginingCycleIfNegativeA; i <= kEndingCycleIfNegativeA; i += kStepCycleIfNegativeA) {
+            answer *= i * i - kStepCycleIfNegativeA;
+        }
+    }
+    std::cout << "S = " << answer << std::endl;
+
     if (SolveAgain()) {
         DoSecondTask();
     }
@@ -74,7 +100,7 @@ void DoFourthTask() {
 }
 
 void TaskSelection() {
-    std::cout << "Введите номер задания (цифру от 1 до 4 включительно), которое хотите решить.\n"
+    std::cout << "\nВведите номер задания (цифру от 1 до 4 включительно), которое хотите решить.\n"
                  "Чтобы завершить программу, напишите 'e'."
               << std::endl;
 
@@ -89,10 +115,10 @@ void TaskSelection() {
         DoThirdTask();
     } else if (taskNumber == kFourthTaskNumber) {
         DoFourthTask();
-    } else if (taskNumber == kExitProgramSymbol) {
+    } else if (taskNumber == kExitProgram) {
         return;
     } else {
-        std::cout << "Вы неправильно ввели номер задания, попробуйте заново.\n" << std::endl;
+        std::cout << "\nНеверный ввод, попробуйте заново.\n" << std::endl;
         TaskSelection();
     }
 }
