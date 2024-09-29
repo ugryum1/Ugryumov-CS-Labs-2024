@@ -148,11 +148,11 @@ void DoFourthTask() {
         y = sqrt(n + y);
 
         if (summandsCounter == kThreeSummands) {
-            std::cout << "Промежуточный результат при 3 слагаемых:\n" << "y = " << y << std::endl;
+            std::cout << "Промежуточный результат при 3 слагаемых: y = " << y << std::endl;
         } else if (summandsCounter == kFiveSummands) {
-            std::cout << "Промежуточный результат при 5 слагаемых:\n" << "y = " << y << std::endl;
+            std::cout << "Промежуточный результат при 5 слагаемых: y = " << y << std::endl;
         } else if (summandsCounter == kTenSummands) {
-            std::cout << "Промежуточный результат при 10 слагаемых:\n" << "y = " << y << std::endl;
+            std::cout << "Промежуточный результат при 10 слагаемых: y = " << y << std::endl;
         }
     }
 
