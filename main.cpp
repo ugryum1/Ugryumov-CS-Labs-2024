@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 
 namespace {
@@ -21,6 +22,19 @@ const int kStepCycleIfPositiveA = 2;
 const int kBeginingCycleIfNegativeA = 3;
 const int kEndingCycleIfNegativeA = 9;
 const int kStepCycleIfNegativeA = 3;
+
+const double kBeginingCycleInThirdTask = 0;
+const double kEndingCycleInThirdTask = 1;
+const double kCycleStepInThirdTask = 0.2;
+
+const int kColumnWidth = 10;   // ширина столбцов
+const int kNumbersLength = 4;  // длина чисел
+
+const double kErrorRate = 0.000001;  // погрешность
+
+const int kThreeSummands = 3;
+const int kFiveSummands = 5;
+const int kTenSummands = 10;
 }  // namespace
 
 void TaskSelection();
@@ -89,12 +103,61 @@ void DoSecondTask() {
 }
 
 void DoThirdTask() {
+    std::cout << std::setw(kColumnWidth) << "x" << std::setw(kColumnWidth) << "Y(x)" << std::setw(kColumnWidth) << "S(x)" << std::setw(kColumnWidth)
+              << "N" << std::endl;
+
+    for (double x = kBeginingCycleInThirdTask; x <= kEndingCycleInThirdTask; x += kCycleStepInThirdTask) {
+        int n = 0;
+        double y = pow(x, 2) * atan(x);
+        double s{};
+        /*double currentSummand{};*/
+        double currentSummand = kErrorRate;  // величина текущего слагаемого
+
+        while (currentSummand >= kErrorRate) {
+            currentSummand = pow(-1, n) * pow(x, 2 * n + 3) / (2 * n + 1);
+            s += currentSummand;
+            ++n;
+        }
+        /*do {
+            currentSummand = pow(-1, n) * pow(x, 2 * n + 3) / (2 * n + 1);
+            s += currentSummand;
+            ++n;
+        } while (currentSummand >= kErrorRate);*/
+
+        std::cout << std::setw(kColumnWidth) << x << std::setw(kColumnWidth) << std::setprecision(kNumbersLength) << y << std::setw(kColumnWidth)
+                  << std::setprecision(kNumbersLength) << s << std::setw(kColumnWidth) << n << std::endl;
+    }
+
     if (SolveAgain()) {
         DoThirdTask();
     }
 }
 
 void DoFourthTask() {
+    int n{};
+    std::cout << "\nВведите натуральное число n." << std::endl;
+    std::cin >> n;
+    n = n * 2 + 1;
+
+    double y = sqrt(n);
+    int summandsCounter = 1;
+
+    while (n > 1) {
+        n -= 2;
+        ++summandsCounter;
+        y = sqrt(n + y);
+
+        if (summandsCounter == kThreeSummands) {
+            std::cout << "Промежуточный результат при 3-х слагаемых:\n" << "y = " << y << std::endl;
+        } else if (summandsCounter == kFiveSummands) {
+            std::cout << "Промежуточный результат при 5-ти слагаемых:\n" << "y = " << y << std::endl;
+        } else if (summandsCounter == kTenSummands) {
+            std::cout << "Промежуточный результат при 10-ти слагаемых:\n" << "y = " << y << std::endl;
+        }
+    }
+
+    std::cout << "Итоговый результат:\ny = " << y << std::endl;
+
     if (SolveAgain()) {
         DoFourthTask();
     }
