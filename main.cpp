@@ -10,12 +10,14 @@ const char kFourthTask = '4';
 const char kExitProgram = 'e';
 const char kContinueProgram = 'y';
 
-const int kFive = 5;
 const int kTwo = 2;
+const int kThree = 3;
+const int kFive = 5;
+const int kTen = 10;
 
-const int kLoopNotNegativeABegin = 2;
-const int kLoopNotNegativeAEnd = 8;
-const int kLoopStepNotNegativeA = 2;
+const int kLoopNonNegativeABegin = 2;
+const int kLoopNonNegativeAEnd = 8;
+const int kLoopStepNonNegativeA = 2;
 const int kLoopNegativeABegin = 3;
 const int kLoopNegativeAEnd = 9;
 const int kLoopStepNegativeA = 3;
@@ -26,10 +28,6 @@ const int kPrecision = 6;
 const double kXStep = 0.2;
 
 const double kEpsilon = 1e-6;
-
-const int kThreeSummands = 3;
-const int kFiveSummands = 5;
-const int kTenSummands = 10;
 }  // namespace
 
 void DoFirstTask() {
@@ -38,8 +36,16 @@ void DoFirstTask() {
     std::cout << "\nВведите натуральные числа n и m (m < n) через проблел." << std::endl;
     std::cin >> n >> m;
 
-    if (m >= n || n <= 0 || m <= 0) {
-        std::cout << "Неверный ввод. Число m должно быть маньше числа n. Также оба числа дожны быть натуральными." << std::endl;
+    if (n <= 0) {
+        std::cout << "Неверный ввод. Число n должно быть натуральным." << std::endl;
+        return;
+    }
+    if (m <= 0) {
+        std::cout << "Неверный ввод. Число m должно быть натуральным." << std::endl;
+        return;
+    }
+    if (m >= n) {
+        std::cout << "Неверный ввод. Число m должно быть меньше числа n." << std::endl;
         return;
     }
 
@@ -62,10 +68,10 @@ void DoSecondTask() {
     std::cout << "\nВведите число a." << std::endl;
     std::cin >> a;
 
-    double answer = 1;
+    double answer = 1.0;
 
     if (a >= 0) {
-        for (int i = kLoopNotNegativeABegin; i <= kLoopNotNegativeAEnd; i += kLoopStepNotNegativeA) {
+        for (int i = kLoopNonNegativeABegin; i <= kLoopNonNegativeAEnd; i += kLoopStepNonNegativeA) {
             answer *= std::pow(i, 2);
         }
         answer -= a;
@@ -75,7 +81,7 @@ void DoSecondTask() {
         }
     }
 
-    std::cout << "S = " << answer << std::endl;
+    std::cout << "S = " << std::setprecision(kTen) << answer << std::endl;
 }
 
 void DoThirdTask() {
@@ -103,37 +109,36 @@ void DoThirdTask() {
     }
 }
 
+double Y(int n) {
+    int k = 2 * n + 1;
+    double y = std::sqrt(k);
+    while (k > 1) {
+        k -= 2;
+        y = sqrt(k + y);
+    }
+    return y;
+}
+
 void DoFourthTask() {
     int n{};
     std::cout << "\nВведите натуральное число n." << std::endl;
     std::cin >> n;
 
     if (n <= 0) {
-        std::cout << "Неверный ввод. Число n должно быть натуральным." << std::endl;
-        return;
+        std::cout << "Неверный ввод. Число n должно быть натуральным" << std::endl;
     }
 
-    int k = n * 2 + 1;
-    double y = std::sqrt(k * 1.0);
-    int summandsCounter = 1;
-    std::cout << y << std::endl;
-
-    while (k > 1) {
-        /*if (n + 1 - summandsCounter == 3) {
-            std::cout << "Промежуточный результат при 3 слагаемых:\ny = " << y << std::endl;
-        } else if (summandsCounter == kFiveSummands) {
-            std::cout << "Промежуточный результат при 5 слагаемых:\ny = " << y << std::endl;
-        } else if (summandsCounter == kTenSummands) {
-            std::cout << "Промежуточный результат при 10 слагаемых:\ny = " << y << std::endl;
-        }*/
-
-        k -= 2;
-        ++summandsCounter;
-        y = std::sqrt(k + y);
-        std::cout << y << std::endl;
+    if (n > kThree) {
+        std::cout << "y(3) = " << Y(kThree) << std::endl;
+    }
+    if (n > kFive) {
+        std::cout << "y(5) = " << Y(kFive) << std::endl;
+    }
+    if (n > kTen) {
+        std::cout << "y(10) = " << Y(kTen) << std::endl;
     }
 
-    std::cout << "Итоговый результат:\ny = " << y << std::endl;
+    std::cout << "y(" << n << ") = " << Y(n) << std::endl;
 }
 
 int main(int, char**) {
