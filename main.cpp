@@ -1,7 +1,7 @@
-#include "lab3.cpp"
+#include "lab3.hpp"
 
 int main() {
-    PrintMenu();
+    lab3::PrintMenu();
 
     return 0;
 }
