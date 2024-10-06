@@ -57,10 +57,8 @@ void DoFirstTask() {
         }
     }
 
-    std::cout << "\nСумма натуральных чисел, делящихся на 5 и не делящихся на " << m
-              << " одновременно, "
-                 "на отрезке от 1 до "
-              << n << " равна " << answer << "." << std::endl;
+    std::cout << "\nСумма натуральных чисел, делящихся на 5 и не делящихся на " << m << " одновременно, на отрезке от 1 до " << n << " равна "
+              << answer << "." << std::endl;
 }
 
 void DoSecondTask() {
@@ -96,7 +94,7 @@ void DoThirdTask() {
         double currentSummand = std::pow(x, 3);
         double s = currentSummand;
 
-        while (std::abs(currentSummand) >= kEpsilon) {
+        while (std::fabs(currentSummand) >= kEpsilon) {
             currentSummand *= (-std::pow(x, 2) * (2 * n + 1) / (2 * n + 3));
             s += currentSummand;
             ++n;
@@ -109,7 +107,7 @@ void DoThirdTask() {
     }
 }
 
-double Y(int n) {
+double SolveFunction(int n) {
     int k = 2 * n + 1;
     double y = std::sqrt(k);
     while (k > 1) {
@@ -129,16 +127,16 @@ void DoFourthTask() {
     }
 
     if (n > kThree) {
-        std::cout << "y(3) = " << Y(kThree) << std::endl;
+        std::cout << "y(3) = " << SolveFunction(kThree) << std::endl;
     }
     if (n > kFive) {
-        std::cout << "y(5) = " << Y(kFive) << std::endl;
+        std::cout << "y(5) = " << SolveFunction(kFive) << std::endl;
     }
     if (n > kTen) {
-        std::cout << "y(10) = " << Y(kTen) << std::endl;
+        std::cout << "y(10) = " << SolveFunction(kTen) << std::endl;
     }
 
-    std::cout << "y(" << n << ") = " << Y(n) << std::endl;
+    std::cout << "y(" << n << ") = " << SolveFunction(n) << std::endl;
 }
 
 int main(int, char**) {
