@@ -1,4 +1,4 @@
-#include "lab3.hpp"
+#include "ThirdLabCode.h"
 
 int main() {
     lab3::PrintMenu();

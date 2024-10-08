@@ -1,4 +1,4 @@
-#include "lab3.hpp"
+#include "ThirdLabCode.h"
 
 #include <cmath>
 #include <iomanip>
@@ -8,7 +8,7 @@ namespace {
 const int kTen = 10;
 const double kHalf = 0.5;
 
-[[nodiscard]] double ConditionFunction(double x, double coefficient) {
+[[nodiscard]] double FunctionCondition(double x, double coefficient) {
     return x - coefficient * std::cos(x);
 }
 
@@ -35,9 +35,8 @@ enum class lab3::Symbols : char {
     if (n <= 0) {
         std::cout << "Неверный ввод, число должно быть натуральным." << std::endl;
         exit(1);
-    } else {
-        return n;
     }
+    return n;
 }
 
 [[nodiscard]] double lab3::SetCoefficient() {
@@ -66,7 +65,7 @@ void lab3::PrintAnswer(double x, int precision, double coefficient, int steps) {
     if (coefficient == 1.) {
         std::cout << "- ";
     } else if (coefficient < 0) {
-        std::cout << "+ " << std::abs(coefficient);
+        std::cout << "+ " << std::fabs(coefficient);
     } else {
         std::cout << "- " << coefficient;
     }
@@ -76,12 +75,11 @@ void lab3::PrintAnswer(double x, int precision, double coefficient, int steps) {
 
 void lab3::CalculateIterativeMethod(int precision, double coefficient) {
     int steps{};
-    double x{};
-    x = coefficient;
+    double x = coefficient;
 
-    while (std::fabs(ConditionFunction(x, coefficient)) > kHalf * std::pow(kTen, -precision)) {
+    while (std::fabs(FunctionCondition(x, coefficient)) > kHalf * std::pow(kTen, -precision)) {
         ++steps;
-        x -= ConditionFunction(x, coefficient);
+        x -= FunctionCondition(x, coefficient);
     }
 
     lab3::PrintAnswer(x, precision, coefficient, steps);
@@ -97,7 +95,7 @@ void lab3::CalculateHalfDivisionMethod(int precision, double coefficient) {
         ++steps;
         middle = (left + right) * kHalf;
 
-        if (ConditionFunction(middle, coefficient) < 0) {
+        if (FunctionCondition(middle, coefficient) < 0) {
             left = middle;
         } else {
             right = middle;
@@ -108,13 +106,12 @@ void lab3::CalculateHalfDivisionMethod(int precision, double coefficient) {
 }
 
 void lab3::CalculateNewtonsMethod(int precision, double coefficient) {
-    double x{};
+    double x = coefficient;
     int steps{};
-    x = coefficient;
 
-    while (std::fabs(ConditionFunction(x, coefficient)) > kHalf * std::pow(kTen, -precision)) {
+    while (std::fabs(FunctionCondition(x, coefficient)) > kHalf * std::pow(kTen, -precision)) {
         ++steps;
-        x -= ConditionFunction(x, coefficient) / FunctionDerivative(x, coefficient);
+        x -= FunctionCondition(x, coefficient) / FunctionDerivative(x, coefficient);
     }
 
     lab3::PrintAnswer(x, precision, coefficient, steps);

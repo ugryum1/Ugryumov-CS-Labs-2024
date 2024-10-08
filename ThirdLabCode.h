@@ -1,5 +1,5 @@
-#ifndef LAB3_HPP
-#define LAB3_HPP
+#ifndef THIRD_LAB_CODE_H
+#define THIRD_LAB_CODE_H
 
 namespace lab3 {
 enum class Symbols : char;
