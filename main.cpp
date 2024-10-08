@@ -39,12 +39,10 @@ void DoFirstTask() {
     if (n <= 0) {
         std::cout << "Неверный ввод. Число n должно быть натуральным." << std::endl;
         return;
-    }
-    if (m <= 0) {
+    } else if (m <= 0) {
         std::cout << "Неверный ввод. Число m должно быть натуральным." << std::endl;
         return;
-    }
-    if (m >= n) {
+    } else if (m >= n) {
         std::cout << "Неверный ввод. Число m должно быть меньше числа n." << std::endl;
         return;
     }
@@ -86,7 +84,7 @@ void DoThirdTask() {
     std::cout << std::setw(kColumnWidth) << "x" << std::setw(kColumnWidth) << "Y(x)" << std::setw(kColumnWidth) << "S(x)" << std::setw(kColumnWidth)
               << "N" << std::endl;
 
-    double x = 0;
+    double x = 0.;
     while (x <= 1.) {
         int n = 0;
         double y = std::pow(x, 2) * std::atan(x);
