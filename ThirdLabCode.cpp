@@ -17,13 +17,6 @@ const double kHalf = 0.5;
 }
 }  // namespace
 
-enum class lab3::Symbols : char {
-    IterativeMethod = '1',
-    HalfDivisionMethod = '2',
-    NewtonsMethod = '3',
-    Exit = 'e'
-};
-
 [[nodiscard]] int lab3::SetPrecision() {
     std::cout << "\nС какой погрешностью считать? Введите натуральное число - "
                  "это будет количество знаков числа-ответа после запятой."

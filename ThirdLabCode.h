@@ -2,7 +2,12 @@
 #define THIRD_LAB_CODE_H
 
 namespace lab3 {
-enum class Symbols : char;
+enum class Symbols : char {
+    IterativeMethod = '1',
+    HalfDivisionMethod = '2',
+    NewtonsMethod = '3',
+    Exit = 'e'
+};
 
 [[nodiscard]] int SetPrecision();
 [[nodiscard]] double SetCoefficient();
