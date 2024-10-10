@@ -6,17 +6,11 @@ enum class Symbols : char {
     IterativeMethod = '1',
     HalfDivisionMethod = '2',
     NewtonsMethod = '3',
-    Exit = 'e'
 };
 
-[[nodiscard]] int SetPrecision();
-[[nodiscard]] double SetCoefficient();
-
-void PrintAnswer(double x, int precision, double coefficient, int steps);
-
-void CalculateIterativeMethod(int precision, double coefficient);
-void CalculateHalfDivisionMethod(int precision, double coefficient);
-void CalculateNewtonsMethod(int precision, double coefficient);
+void CalculateIterativeMethod(double precision, double coefficient);
+void CalculateHalfDivisionMethod(double precision, double coefficient);
+void CalculateNewtonsMethod(double precision, double coefficient);
 
 [[nodiscard]] bool ContinueInput(char symbol);
 

@@ -15,31 +15,30 @@ const double kHalf = 0.5;
 [[nodiscard]] double FunctionDerivative(double x, double coefficient) {
     return 1 + coefficient * std::sin(x);
 }
-}  // namespace
 
-[[nodiscard]] int lab3::SetPrecision() {
-    std::cout << "\nС какой погрешностью считать? Введите натуральное число - "
-                 "это будет количество знаков числа-ответа после запятой."
+[[nodiscard]] double SetPrecision() {
+    std::cout << "С какой погрешностью считать? Введите число с плавающей точкой в интервале от 0 до 1, "
+                 "либо в виде 1e-n, где n - желаемое количество знаков ответа после запятой."
               << std::endl;
 
-    int n{};
-    std::cin >> n;
+    double precision{};
+    std::cin >> precision;
 
-    if (n <= 0) {
-        std::cout << "Неверный ввод, число должно быть натуральным." << std::endl;
+    if (precision <= 0 || precision >= 1) {
+        std::cout << "Неверный ввод." << std::endl;
         exit(1);
     }
-    return n;
+    return precision;
 }
 
-[[nodiscard]] double lab3::SetCoefficient() {
-    std::cout << "\nЗадать коэффициент a уравнения x - a*cos(x) = 0? (y/n)" << std::endl;
+[[nodiscard]] double SetCoefficient() {
+    std::cout << "Задать коэффициент a уравнения x - a*cos(x) = 0? (y/n)" << std::endl;
 
     char choice{};
     std::cin >> choice;
 
     if (choice == 'y') {
-        std::cout << "\nВведите коэффициент a уравнения x - a*cos(x) = 0." << std::endl;
+        std::cout << "Введите коэффициент a уравнения x - a*cos(x) = 0." << std::endl;
 
         double coefficient{};
         std::cin >> coefficient;
@@ -53,8 +52,11 @@ const double kHalf = 0.5;
     return 1.;
 }
 
-void lab3::PrintAnswer(double x, int precision, double coefficient, int steps) {
+void PrintAnswer(double x, double precision, double coefficient, int steps, char method) {
+    int accuracy = int(std::log10(1 / precision));
+
     std::cout << "\nКорень уравнения x ";
+
     if (coefficient == 1.) {
         std::cout << "- ";
     } else if (coefficient < 0) {
@@ -62,29 +64,40 @@ void lab3::PrintAnswer(double x, int precision, double coefficient, int steps) {
     } else {
         std::cout << "- " << coefficient;
     }
-    std::cout << "cos(x) = 0:\tx = " << std::fixed << std::setprecision(precision) << x << "\nНайдено с погреностью 10^-" << precision << " за "
-              << steps << " шагов.\n\n";
-}
 
-void lab3::CalculateIterativeMethod(int precision, double coefficient) {
+    std::cout << "cos(x) = 0:\tx = " << std::fixed << std::setprecision(accuracy) << x << "\nНайдено с погреностью 10^-" << accuracy << " методом ";
+
+    if (method == static_cast<char>(lab3::Symbols::IterativeMethod)) {
+        std::cout << "простых итераций.";
+    } else if (method == static_cast<char>(lab3::Symbols::HalfDivisionMethod)) {
+        std::cout << "половинного деления.";
+    } else {
+        std::cout << "Ньютона.";
+    }
+
+    std::cout << "\nКоличество шагов: " << steps << ".\n\n";
+}
+}  // namespace
+
+void lab3::CalculateIterativeMethod(double precision, double coefficient) {
     int steps{};
     double x = coefficient;
 
-    while (std::fabs(FunctionCondition(x, coefficient)) > kHalf * std::pow(kTen, -precision)) {
+    while (std::fabs(FunctionCondition(x, coefficient)) > kHalf * precision) {
         ++steps;
         x -= FunctionCondition(x, coefficient);
     }
 
-    lab3::PrintAnswer(x, precision, coefficient, steps);
+    PrintAnswer(x, precision, coefficient, steps, static_cast<char>(lab3::Symbols::IterativeMethod));
 }
 
-void lab3::CalculateHalfDivisionMethod(int precision, double coefficient) {
+void lab3::CalculateHalfDivisionMethod(double precision, double coefficient) {
     int steps{};
     double left = -coefficient;
     double right = coefficient;
     double middle{};
 
-    while (right - left > kHalf * std::pow(kTen, -precision)) {
+    while (right - left > kHalf * precision) {
         ++steps;
         middle = (left + right) * kHalf;
 
@@ -95,53 +108,58 @@ void lab3::CalculateHalfDivisionMethod(int precision, double coefficient) {
         }
     }
 
-    lab3::PrintAnswer(left, precision, coefficient, steps);
+    PrintAnswer(left, precision, coefficient, steps, static_cast<char>(lab3::Symbols::HalfDivisionMethod));
 }
 
-void lab3::CalculateNewtonsMethod(int precision, double coefficient) {
+void lab3::CalculateNewtonsMethod(double precision, double coefficient) {
     double x = coefficient;
     int steps{};
 
-    while (std::fabs(FunctionCondition(x, coefficient)) > kHalf * std::pow(kTen, -precision)) {
+    while (std::fabs(FunctionCondition(x, coefficient)) > kHalf * precision) {
         ++steps;
         x -= FunctionCondition(x, coefficient) / FunctionDerivative(x, coefficient);
     }
 
-    lab3::PrintAnswer(x, precision, coefficient, steps);
+    PrintAnswer(x, precision, coefficient, steps, static_cast<char>(lab3::Symbols::NewtonsMethod));
 }
 
 [[nodiscard]] bool lab3::ContinueInput(char symbol) {
     switch (symbol) {
         case static_cast<char>(lab3::Symbols::IterativeMethod):
-            lab3::CalculateIterativeMethod(lab3::SetPrecision(), lab3::SetCoefficient());
+            lab3::CalculateIterativeMethod(SetPrecision(), SetCoefficient());
             break;
         case static_cast<char>(lab3::Symbols::HalfDivisionMethod):
-            lab3::CalculateHalfDivisionMethod(lab3::SetPrecision(), lab3::SetCoefficient());
+            lab3::CalculateHalfDivisionMethod(SetPrecision(), SetCoefficient());
             break;
         case static_cast<char>(lab3::Symbols::NewtonsMethod):
-            lab3::CalculateNewtonsMethod(lab3::SetPrecision(), lab3::SetCoefficient());
-            break;
-        case static_cast<char>(lab3::Symbols::Exit):
-            return false;
+            lab3::CalculateNewtonsMethod(SetPrecision(), SetCoefficient());
             break;
         default:
             std::cout << "Неверный ввод." << std::endl;
-            exit(1);
+            return false;
     }
     return true;
 }
 
 void lab3::PrintMenu() {
-    while (true) {
+    char continueEcecution = 'y';
+    while (continueEcecution == 'y') {
         std::cout << "Введите номер метода (число от 1 до 3), которым хотите решить задачу."
-                     "\n\t1. Итерационный метод\n\t2. Метод половинного деления\n\t3. Метод Ньютона\n"
-                     "Чтобы завершить программу, напишите 'e'."
+                     "\n\t1. Итерационный метод\n\t2. Метод половинного деления\n\t3. Метод Ньютона"
                   << std::endl;
         char input{};
         std::cin >> input;
 
         if (!lab3::ContinueInput(input)) {
             return;
+        }
+
+        std::cout << "Продолжить работу? (y/n)" << std::endl;
+        std::cin >> continueEcecution;
+        if (continueEcecution == 'y') {
+            std::cout << std::endl;
+        } else if (continueEcecution != 'n') {
+            std::cout << "Неверный ввод." << std::endl;
         }
     }
 }
