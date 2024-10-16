@@ -1,7 +1,7 @@
-#include "ThirdLabCode.h"
+#include "SolvingFunction.h"
 
 int main() {
-    lab3::PrintMenu();
+    SolvingFunction::TaskApp();
 
     return 0;
 }
