@@ -1,7 +1,7 @@
-#include "SolvingFunction.h"
+#include "SolvingNonlinearEquation.h"
 
 int main() {
-    SolvingFunction::TaskApp();
+    SolvingNonlinearEquation::TaskApp();
 
     return 0;
 }
