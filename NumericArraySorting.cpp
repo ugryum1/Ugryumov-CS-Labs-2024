@@ -21,10 +21,10 @@ void PrintArray(int* array, int arrayLength) {
 void PrintTable(int permutationsSelection, int comparisonsSelection, int permutationsBubble, int comparisonsBubble) {
     std::cout << std::endl;
     std::cout << "      Сортировка" << "    Перестановки" << "       Сравнения" << std::endl;
-    std::cout << "         Выбором" << std::setw(kColumnWidth) << permutationsSelection << std::setw(kColumnWidth)
-              << comparisonsSelection << std::endl;
-    std::cout << "       Пузырьком" << std::setw(kColumnWidth) << permutationsBubble << std::setw(kColumnWidth)
-              << comparisonsBubble << std::endl << std::endl;
+    std::cout << "         Выбором" << std::setw(kColumnWidth) << permutationsSelection << std::setw(kColumnWidth) << comparisonsSelection
+              << std::endl;
+    std::cout << "       Пузырьком" << std::setw(kColumnWidth) << permutationsBubble << std::setw(kColumnWidth) << comparisonsBubble << std::endl
+              << std::endl;
 }
 
 void PrintSortedArray(int* array, int* arrayClone, int arrayLength) {
