@@ -5,58 +5,73 @@
 #include <random>
 
 namespace {
-const int kColumnWidth = 16;
+const size_t kColumnWidth = 16;
 const int kTwo = 2;
-const int kStaticArrayLength = 8;
+const size_t kStaticArrayLength = 8;
+
 const int kMinRandomValue = 1;
 const int kMaxRandomValue = 99;
 
-void PrintArray(int* array, int arrayLength) {
-    for (int i = 0; i < arrayLength; ++i) {
+const bool kReversed = true;
+const bool kNonReversed = false;
+
+void PrintArray(int* array, size_t arrayLength) {
+    for (size_t i = 0; i < arrayLength; ++i) {
         std::cout << array[i] << ' ';
     }
     std::cout << std::endl;
 }
 
-void PrintTable(int permutationsSelection, int comparisonsSelection, int permutationsBubble, int comparisonsBubble) {
+void PrintTable(size_t permutationsSelection, size_t comparisonsSelection, size_t permutationsBubble, size_t comparisonsBubble) {
     std::cout << std::endl;
     std::cout << "      Сортировка" << "    Перестановки" << "       Сравнения" << std::endl;
     std::cout << "         Выбором" << std::setw(kColumnWidth) << permutationsSelection << std::setw(kColumnWidth) << comparisonsSelection
               << std::endl;
     std::cout << "       Пузырьком" << std::setw(kColumnWidth) << permutationsBubble << std::setw(kColumnWidth) << comparisonsBubble << std::endl
               << std::endl;
+    std::cout << "Сортировка " << (permutationsSelection + comparisonsSelection < permutationsBubble + comparisonsBubble ? "выбором" : "пузырьком")
+              << " прошла быстрее.\n\n";
 }
 
-void PrintSortedArray(int* array, int* arrayClone, int arrayLength) {
-    int permutationsSelection{};
-    int comparisonsSelection{};
-    int permutationsBubble{};
-    int comparisonsBubble{};
+void PrintSortedArray(int* array, int* arrayClone, size_t arrayLength, bool reversed) {
+    size_t permutationsSelection{};
+    size_t comparisonsSelection{};
+    size_t permutationsBubble{};
+    size_t comparisonsBubble{};
 
     std::cout << "Массив:\t";
     PrintArray(array, arrayLength);
 
-    std::cout << "Отсортированный выбором:\t";
-    NumericArraySorting::SelectionSorting(array, arrayLength, permutationsSelection, comparisonsSelection);
+    std::cout << "Отсортированный выбором" << (reversed == kReversed ? " по невозрастанию" : "") << ":\t";
+    if (reversed == kNonReversed) {
+        NumericArraySorting::SelectionSorting(array, arrayLength, permutationsSelection, comparisonsSelection, kNonReversed);
+    } else {
+        NumericArraySorting::SelectionSorting(array, arrayLength, permutationsSelection, comparisonsSelection, kReversed);
+    }
+
     PrintArray(array, arrayLength);
 
-    std::cout << "Отсортированный пузырьком:\t";
-    NumericArraySorting::BubbleSorting(arrayClone, arrayLength, permutationsBubble, comparisonsBubble);
+    std::cout << "Отсортированный пузырьком" << (reversed == kReversed ? " по невозрастанию" : "") << ":\t";
+    if (reversed == kNonReversed) {
+        NumericArraySorting::BubbleSorting(arrayClone, arrayLength, permutationsBubble, comparisonsBubble, kNonReversed);
+    } else {
+        NumericArraySorting::BubbleSorting(arrayClone, arrayLength, permutationsBubble, comparisonsBubble, kReversed);
+    }
     PrintArray(arrayClone, arrayLength);
 
     PrintTable(permutationsSelection, comparisonsSelection, permutationsBubble, comparisonsBubble);
 }
 }  // namespace
 
-void NumericArraySorting::SelectionSorting(int* array, int arrayLength, int& permutations, int& comparisons) {
+void NumericArraySorting::SelectionSorting(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool reversed) {
     if (arrayLength <= 1) {
         return;
     }
 
-    for (int i = 0; i < arrayLength - 1; ++i) {
-        int minIndex = i;
-        for (int j = i + 1; j < arrayLength; ++j) {
-            if (array[j] < array[minIndex]) {
+    for (size_t i = 0; i < arrayLength - 1; ++i) {
+        size_t minIndex = i;
+        for (size_t j = i + 1; j < arrayLength; ++j) {
+            if ((reversed == kNonReversed && array[j] < array[minIndex]) || (reversed == kReversed && array[j] > array[minIndex])) {
                 minIndex = j;
             }
             ++comparisons;
@@ -69,10 +84,10 @@ void NumericArraySorting::SelectionSorting(int* array, int arrayLength, int& per
     }
 }
 
-void NumericArraySorting::BubbleSorting(int* array, int arrayLength, int& permutations, int& comparisons) {
-    for (int i = 0; i < arrayLength - 1; ++i) {
-        for (int j = 0; j < arrayLength - i - 1; ++j) {
-            if (array[j] > array[j + 1]) {
+void NumericArraySorting::BubbleSorting(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool reversed) {
+    for (size_t i = 0; i < arrayLength - 1; ++i) {
+        for (size_t j = 0; j < arrayLength - i - 1; ++j) {
+            if ((reversed == kNonReversed && array[j] > array[j + 1]) || (reversed == kReversed && array[j] < array[j + 1])) {
                 int temp = array[j];
                 array[j] = array[j + 1];
                 array[j + 1] = temp;
@@ -90,13 +105,14 @@ void NumericArraySorting::DoStaticArray() {
     std::random_device r{};
     std::default_random_engine randomEngine(r());
     std::uniform_int_distribution distribution(kMinRandomValue, kMaxRandomValue);
-    for (int i = 0; i < kStaticArrayLength; ++i) {
+    for (size_t i = 0; i < kStaticArrayLength; ++i) {
         array[i] = distribution(randomEngine);
         arrayClone[i] = array[i];
     }
 
-    PrintSortedArray(array, arrayClone, kStaticArrayLength);
-    PrintSortedArray(array, arrayClone, kStaticArrayLength);
+    PrintSortedArray(array, arrayClone, kStaticArrayLength, kNonReversed);
+    PrintSortedArray(array, arrayClone, kStaticArrayLength, kNonReversed);
+    PrintSortedArray(array, arrayClone, kStaticArrayLength, kReversed);
 
     delete[] array;
     delete[] arrayClone;
@@ -105,7 +121,7 @@ void NumericArraySorting::DoStaticArray() {
 void NumericArraySorting::DoDynamicArray() {
     std::cout << "Введите целое натуральное число - длину массива." << std::endl;
 
-    int arrayLength{};
+    size_t arrayLength{};
     std::cin >> arrayLength;
 
     if (arrayLength <= 0) {
@@ -119,12 +135,12 @@ void NumericArraySorting::DoDynamicArray() {
     std::random_device r{};
     std::default_random_engine randomEngine(r());
     std::uniform_int_distribution distribution(kMinRandomValue, kMaxRandomValue);
-    for (int i = 0; i < arrayLength; ++i) {
+    for (size_t i = 0; i < arrayLength; ++i) {
         array[i] = distribution(randomEngine);
         arrayClone[i] = array[i];
     }
 
-    PrintSortedArray(array, arrayClone, arrayLength);
+    PrintSortedArray(array, arrayClone, arrayLength, kNonReversed);
 
     delete[] array;
     delete[] arrayClone;
