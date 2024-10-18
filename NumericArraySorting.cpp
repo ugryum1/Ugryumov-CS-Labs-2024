@@ -64,10 +64,6 @@ void PrintSortedArray(int* array, int* arrayClone, size_t arrayLength, bool reve
 }  // namespace
 
 void NumericArraySorting::SelectionSorting(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool reversed) {
-    if (arrayLength <= 1) {
-        return;
-    }
-
     for (size_t i = 0; i < arrayLength - 1; ++i) {
         size_t minIndex = i;
         for (size_t j = i + 1; j < arrayLength; ++j) {
@@ -86,14 +82,19 @@ void NumericArraySorting::SelectionSorting(int* array, size_t arrayLength, size_
 
 void NumericArraySorting::BubbleSorting(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool reversed) {
     for (size_t i = 0; i < arrayLength - 1; ++i) {
+        size_t currentPermutations{};
         for (size_t j = 0; j < arrayLength - i - 1; ++j) {
             if ((reversed == kNonReversed && array[j] > array[j + 1]) || (reversed == kReversed && array[j] < array[j + 1])) {
                 int temp = array[j];
                 array[j] = array[j + 1];
                 array[j + 1] = temp;
                 permutations += kTwo;
+                currentPermutations += kTwo;
             }
             ++comparisons;
+        }
+        if (currentPermutations == 0) {
+            return;
         }
     }
 }
