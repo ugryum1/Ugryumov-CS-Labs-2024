@@ -1,24 +1,25 @@
-#ifndef THIRD_LAB_CODE_H
-#define THIRD_LAB_CODE_H
+#ifndef SOLVING_NOLINEAR_EQUATION
+#define SOLVING_NOLINEAR_EQUATION
 
-namespace SolvingNonlinearEquation {
-enum class Method : int {
-    IterativeMethod = 1,
-    HalfDivisionMethod = 2,
-    NewtonsMethod = 3,
+namespace NonlinearEquationSolver {
+enum class EquationMethod : int {
+    Iterative = 1,
+    HalfDivision = 2,
+    Newton = 3,
 };
 
+[[nodiscard]] double CalculateIterativeMethod(double coefficient, double accuracy, int& iterations);
 void DoIterativeMethod();
+
+[[nodiscard]] double CalculateHalfDivisionMethod(double coefficient, double accuracy, double left, double right, int& iterations);
 void DoHalfDivisionMethod();
+
+[[nodiscard]] double CalculateNewtonMethod(double coefficient, double accuracy, int& iterations);
 void DoNewtonMethod();
 
-[[nodiscard]] double CalculateIterativeMethod(double coefficient, double accuracy, int& steps);
-[[nodiscard]] double CalculateHalfDivisionMethod(double coefficient, double accuracy, int& steps, double left, double right);
-[[nodiscard]] double CalculateNewtonMethod(double coefficient, double accuracy, int& steps);
+void SelectMethod(EquationMethod task);
 
-void SelectMethod(Method task);
-
-void TaskApp();
+void ExecuteApp();
 }  // namespace SolvingNonlinearEquation
 
-#endif
+#endif  // SOLVING_NOLINEAR_EQUATION
