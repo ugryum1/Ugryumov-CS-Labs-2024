@@ -1,13 +1,13 @@
-#include "SolvingNonlinearEquation.h"
+#include "NonlinearEquationSolver.h"
 
 #include <cmath>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 
 namespace {
-const double kTwo = 2.;
-const double kAccuracy = 0.1;
 const int kMaxSteps = 1e5;
+const double kMaxDifferenceX = 0.01;
 
 [[nodiscard]] double CalculateFunction(double x, double coefficient) {
     return x - coefficient * std::cos(x);
@@ -38,19 +38,15 @@ const int kMaxSteps = 1e5;
 }
 
 void PrintAnswer(double x, double coefficient, double accuracy, int iterations, NonlinearEquationSolver::EquationMethod method) {
-    int precision = static_cast<int>(-std::log10(accuracy));
-
-    std::cout << "\nКорень уравнения x " << (coefficient < 0 ? "+ " : "- ");
-
-    if (std::fabs(coefficient) != 1.) {
-        std::cout << std::resetiosflags(std::ios::fixed) << std::fabs(coefficient);
-    }
-    std::cout << "cos(x) = 0";
-
-    if (std::fabs(CalculateFunction(x, coefficient)) > kAccuracy) {
-        std::cout << " не найден за 1e+5 операций." << std::endl;
+    if (x == std::numeric_limits<double>::infinity()) {
+        std::cout << "Не получилось найти корень данным методом за 1e5 операций." << std::endl;
         return;
     }
+
+    int precision = static_cast<int>(-std::log10(accuracy));
+
+    std::cout << "\nКорень уравнения x " << (coefficient < 0 ? "+ " : "- ") << std::resetiosflags(std::ios::fixed) << std::fabs(coefficient)
+              << "cos(x) = 0";
 
     std::cout << ":\tx = " << std::fixed << std::setprecision(precision) << x;
     std::cout << "\nНайдено с погреностью 10^-" << precision << " методом ";
@@ -72,19 +68,7 @@ void PrintAnswer(double x, double coefficient, double accuracy, int iterations, 
 }  // namespace
 
 namespace NonlinearEquationSolver {
-[[nodiscard]] double CalculateIterativeMethod(double coefficient, double accuracy, int& iterations) {
-    double x = coefficient;
-    iterations = 0;
-
-    while (std::fabs(CalculateFunction(x, coefficient)) > accuracy && iterations < kMaxSteps) {
-        ++iterations;
-        x -= CalculateFunction(x, coefficient);
-    }
-
-    return x;
-}
-
-void DoIterativeMethod() {
+void SolveIterativeMethod() {
     double coefficient = ReadCoefficientFromStdin();
     double accuracy = ReadAccuracyFromStdin();
     int iterations{};
@@ -93,26 +77,7 @@ void DoIterativeMethod() {
     PrintAnswer(x, coefficient, accuracy, iterations, EquationMethod::Iterative);
 }
 
-[[nodiscard]] double CalculateHalfDivisionMethod(double coefficient, double accuracy, double left, double right, int& iterations) {
-    double middle{};
-    iterations = 0;
-
-    while (right - left > accuracy) {
-        ++iterations;
-        middle = (left + right) / kTwo;
-
-        if ((CalculateFunction(right, coefficient) > 0 && CalculateFunction(middle, coefficient) < 0) ||
-            (CalculateFunction(right, coefficient) < 0 && CalculateFunction(middle, coefficient) > 0)) {
-            left = middle;
-        } else {
-            right = middle;
-        }
-    }
-
-    return middle;
-}
-
-void DoHalfDivisionMethod() {
+void SolveHalfDivisionMethod() {
     double coefficient = ReadCoefficientFromStdin();
     double accuracy = ReadAccuracyFromStdin();
 
@@ -128,30 +93,23 @@ void DoHalfDivisionMethod() {
         return;
     }
 
-    if ((CalculateFunction(left, coefficient) <= 0 && CalculateFunction(right, coefficient) <= 0) ||
-        (CalculateFunction(left, coefficient) >= 0 && CalculateFunction(right, coefficient) >= 0)) {
+    if ((CalculateFunction(left, coefficient) < 0. && CalculateFunction(right, coefficient) < 0.) ||
+        (CalculateFunction(left, coefficient) > 0. && CalculateFunction(right, coefficient) > 0.)) {
         std::cout << "В данном диапазоне нет корней или они не могут быть найдены данным методом.\n\n";
         return;
     }
 
     double x = CalculateHalfDivisionMethod(coefficient, accuracy, left, right, iterations);
 
+    if (x == std::numeric_limits<double>::infinity()) {
+        std::cout << "Левая граница должна быть меньше правой.\n\n";
+        return;
+    }
+
     PrintAnswer(x, coefficient, accuracy, iterations, EquationMethod::HalfDivision);
 }
 
-[[nodiscard]] double CalculateNewtonMethod(double coefficient, double accuracy, int& iterations) {
-    double x = coefficient;
-    iterations = 0;
-
-    while (std::fabs(CalculateFunction(x, coefficient)) > accuracy && iterations != kMaxSteps) {
-        ++iterations;
-        x -= CalculateFunction(x, coefficient) / CalculateFunctionDerivative(x, coefficient);
-    }
-
-    return x;
-}
-
-void DoNewtonMethod() {
+void SolveNewtonMethod() {
     double coefficient = ReadCoefficientFromStdin();
     double accuracy = ReadAccuracyFromStdin();
     int iterations{};
@@ -160,16 +118,75 @@ void DoNewtonMethod() {
     PrintAnswer(x, coefficient, accuracy, iterations, EquationMethod::Newton);
 }
 
+[[nodiscard]] double CalculateIterativeMethod(double coefficient, double accuracy, int& iterations) {
+    double x = coefficient;
+    double previousX{};
+    iterations = 0;
+
+    while (std::fabs(CalculateFunction(x, coefficient)) > accuracy && iterations < kMaxSteps) {
+        ++iterations;
+        previousX = x;
+        x -= CalculateFunction(x, coefficient);
+    }
+
+    if (std::fabs(x - previousX) > kMaxDifferenceX) {
+        x = std::numeric_limits<double>::infinity();
+    }
+
+    return x;
+}
+
+[[nodiscard]] double CalculateHalfDivisionMethod(double coefficient, double accuracy, double left, double right, int& iterations) {
+    if (left >= right) {
+        return std::numeric_limits<double>::infinity();
+    }
+
+    double middle{};
+    iterations = 0;
+
+    while (right - left > accuracy) {
+        ++iterations;
+        middle = (left + right) / 2;
+
+        if ((CalculateFunction(right, coefficient) > 0 && CalculateFunction(middle, coefficient) < 0) ||
+            (CalculateFunction(right, coefficient) < 0 && CalculateFunction(middle, coefficient) > 0)) {
+            left = middle;
+        } else {
+            right = middle;
+        }
+    }
+
+    return (left + right) / 2;
+}
+
+[[nodiscard]] double CalculateNewtonMethod(double coefficient, double accuracy, int& iterations) {
+    double x = coefficient;
+    double previousX{};
+    iterations = 0;
+
+    while (std::fabs(CalculateFunction(x, coefficient)) > accuracy && iterations != kMaxSteps) {
+        ++iterations;
+        previousX = x;
+        x -= CalculateFunction(x, coefficient) / CalculateFunctionDerivative(x, coefficient);
+    }
+
+    if (std::fabs(x - previousX) > kMaxDifferenceX) {
+        x = std::numeric_limits<double>::infinity();
+    }
+
+    return x;
+}
+
 void SelectMethod(EquationMethod task) {
     switch (task) {
         case EquationMethod::Iterative:
-            DoIterativeMethod();
+            SolveIterativeMethod();
             break;
         case EquationMethod::HalfDivision:
-            DoHalfDivisionMethod();
+            SolveHalfDivisionMethod();
             break;
         case EquationMethod::Newton:
-            DoNewtonMethod();
+            SolveNewtonMethod();
             break;
         default:
             std::cout << "Неверный ввод метода." << std::endl;
@@ -178,19 +195,19 @@ void SelectMethod(EquationMethod task) {
 }
 
 void ExecuteApp() {
-    char continueEcecution = 'y';
-    while (continueEcecution == 'y') {
+    char continueExecution = 'y';
+    while (continueExecution == 'y') {
         std::cout << "Введите номер метода (число от 1 до 3), которым хотите решить задачу."
                      "\n\t1. Итерационный метод\n\t2. Метод половинного деления\n\t3. Метод Ньютона"
                   << std::endl;
-        int input{};
-        std::cin >> input;
+        int methodNumber{};
+        std::cin >> methodNumber;
 
-        SelectMethod(static_cast<EquationMethod>(input));
+        SelectMethod(static_cast<EquationMethod>(methodNumber));
 
         std::cout << "Продолжить работу? (y/n)" << std::endl;
-        std::cin >> continueEcecution;
-        if (continueEcecution == 'y') {
+        std::cin >> continueExecution;
+        if (continueExecution == 'y') {
             std::cout << std::endl;
         }
     }
