@@ -20,6 +20,6 @@ void DoNewtonMethod();
 void SelectMethod(EquationMethod task);
 
 void ExecuteApp();
-}  // namespace SolvingNonlinearEquation
+}  // namespace NonlinearEquationSolver
 
 #endif  // SOLVING_NOLINEAR_EQUATION
