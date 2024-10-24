@@ -7,7 +7,6 @@
 
 namespace {
 const int kMaxSteps = 1e5;
-const double kMaxDifferenceX = 0.01;
 
 [[nodiscard]] double CalculateFunction(double x, double coefficient) {
     return x - coefficient * std::cos(x);
