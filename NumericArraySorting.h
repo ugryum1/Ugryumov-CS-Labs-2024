@@ -1,7 +1,7 @@
-#ifndef NUMERIC_ARRAY_SORTING
-#define NUMERIC_ARRAY_SORTING
+#ifndef NUMERIC_ARRAY_SORTING_H
+#define NUMERIC_ARRAY_SORTING_H
 
-#include <stddef.h>
+#include <cstddef>
 
 namespace NumericArraySorting {
 enum class ArrayType : int {
@@ -9,15 +9,15 @@ enum class ArrayType : int {
     Dynamic = 2,
 };
 
-void SelectionSorting(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool reversed);
-void BubbleSorting(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool reversed);
+void SelectionSort(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool ascending = true);
+void BubbleSort(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool ascending = true);
 
-void DoStaticArray();
-void DoDynamicArray();
+void RunSortStaticArray();
+void RunSortDynamicArray();
 
 void SelectTask(ArrayType task);
 
-void TaskApp();
+void ExecuteApp();
 }  // namespace NumericArraySorting
 
-#endif
+#endif  // NUMERIC_ARRAY_SORTING_H

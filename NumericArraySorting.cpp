@@ -6,16 +6,39 @@
 
 namespace {
 const size_t kColumnWidth = 16;
-const int kTwo = 2;
 const size_t kStaticArrayLength = 8;
 
-const int kMinRandomValue = 1;
+const int kMinRandomValue = 0;
 const int kMaxRandomValue = 99;
 
-const bool kReversed = true;
-const bool kNonReversed = false;
+void FillArrayWithRandomValues(int* array, size_t arrayLength) {
+    if (!array) {
+        return;
+    }
 
-void PrintArray(int* array, size_t arrayLength) {
+    std::random_device r{};
+    std::default_random_engine randomEngine(r());
+    std::uniform_int_distribution distribution(kMinRandomValue, kMaxRandomValue);
+    for (size_t i = 0; i < arrayLength; ++i) {
+        array[i] = distribution(randomEngine);
+    }
+}
+
+void CopyArray(const int* source, int* destination, size_t arrayLength) {
+    if (!source || !destination) {
+        return;
+    }
+
+    for (size_t i = 0; i < arrayLength; ++i) {
+        destination[i] = source[i];
+    }
+}
+
+void PrintArray(const int* array, size_t arrayLength) {
+    if (!array) {
+        return;
+    }
+
     for (size_t i = 0; i < arrayLength; ++i) {
         std::cout << array[i] << ' ';
     }
@@ -24,102 +47,114 @@ void PrintArray(int* array, size_t arrayLength) {
 
 void PrintTable(size_t permutationsSelection, size_t comparisonsSelection, size_t permutationsBubble, size_t comparisonsBubble) {
     std::cout << std::endl;
-    std::cout << "      Сортировка" << "    Перестановки" << "       Сравнения" << std::endl;
-    std::cout << "         Выбором" << std::setw(kColumnWidth) << permutationsSelection << std::setw(kColumnWidth) << comparisonsSelection
+    std::cout << std::left << std::setw(kColumnWidth) << "Sorting" << std::left << std::setw(kColumnWidth) << std::left << "Permutations"
+              << std::setw(kColumnWidth) << "Comparisons" << std::endl;
+    std::cout << std::left << std::setw(kColumnWidth) << "Selection" << std::left << std::setw(kColumnWidth) << permutationsSelection << std::left
+              << std::setw(kColumnWidth) << comparisonsSelection << std::endl;
+    std::cout << std::left << std::setw(kColumnWidth) << "Bubble" << std::left << std::setw(kColumnWidth) << permutationsBubble << std::left
+              << std::setw(kColumnWidth) << comparisonsBubble << std::endl
               << std::endl;
-    std::cout << "       Пузырьком" << std::setw(kColumnWidth) << permutationsBubble << std::setw(kColumnWidth) << comparisonsBubble << std::endl
-              << std::endl;
-    std::cout << "Сортировка " << (permutationsSelection + comparisonsSelection < permutationsBubble + comparisonsBubble ? "выбором" : "пузырьком")
-              << " прошла быстрее.\n\n";
-}
-
-void PrintSortedArray(int* array, int* arrayClone, size_t arrayLength, bool reversed) {
-    size_t permutationsSelection{};
-    size_t comparisonsSelection{};
-    size_t permutationsBubble{};
-    size_t comparisonsBubble{};
-
-    std::cout << "Массив:\t";
-    PrintArray(array, arrayLength);
-
-    std::cout << "Отсортированный выбором" << (reversed == kReversed ? " по невозрастанию" : "") << ":\t";
-    if (reversed == kNonReversed) {
-        NumericArraySorting::SelectionSorting(array, arrayLength, permutationsSelection, comparisonsSelection, kNonReversed);
-    } else {
-        NumericArraySorting::SelectionSorting(array, arrayLength, permutationsSelection, comparisonsSelection, kReversed);
-    }
-
-    PrintArray(array, arrayLength);
-
-    std::cout << "Отсортированный пузырьком" << (reversed == kReversed ? " по невозрастанию" : "") << ":\t";
-    if (reversed == kNonReversed) {
-        NumericArraySorting::BubbleSorting(arrayClone, arrayLength, permutationsBubble, comparisonsBubble, kNonReversed);
-    } else {
-        NumericArraySorting::BubbleSorting(arrayClone, arrayLength, permutationsBubble, comparisonsBubble, kReversed);
-    }
-    PrintArray(arrayClone, arrayLength);
-
-    PrintTable(permutationsSelection, comparisonsSelection, permutationsBubble, comparisonsBubble);
 }
 }  // namespace
 
-void NumericArraySorting::SelectionSorting(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool reversed) {
+namespace NumericArraySorting {
+void SelectionSort(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool ascending) {
+    if (!array) {
+        return;
+    }
+
+    permutations = 0;
+    comparisons = 0;
+
     for (size_t i = 0; i < arrayLength - 1; ++i) {
         size_t minIndex = i;
         for (size_t j = i + 1; j < arrayLength; ++j) {
-            if ((reversed == kNonReversed && array[j] < array[minIndex]) || (reversed == kReversed && array[j] > array[minIndex])) {
+            if ((ascending && array[j] < array[minIndex]) || (!ascending && array[j] > array[minIndex])) {
                 minIndex = j;
             }
             ++comparisons;
         }
 
-        int temp = array[i];
-        array[i] = array[minIndex];
-        array[minIndex] = temp;
-        permutations += kTwo;
+        if (array[i] != array[minIndex]) {
+            std::swap(array[i], array[minIndex]);
+            ++permutations;
+        }
     }
 }
 
-void NumericArraySorting::BubbleSorting(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool reversed) {
-    for (size_t i = 0; i < arrayLength - 1; ++i) {
-        size_t currentPermutations{};
+void BubbleSort(int* array, size_t arrayLength, size_t& permutations, size_t& comparisons, bool ascending) {
+    if (!array) {
+        return;
+    }
+
+    permutations = 0;
+    comparisons = 0;
+    size_t permutationsPerLoop = 1;
+
+    for (size_t i = 0; i < arrayLength - 1 && permutationsPerLoop != 0; ++i) {
+        permutationsPerLoop = 0;
         for (size_t j = 0; j < arrayLength - i - 1; ++j) {
-            if ((reversed == kNonReversed && array[j] > array[j + 1]) || (reversed == kReversed && array[j] < array[j + 1])) {
-                int temp = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = temp;
-                permutations += kTwo;
-                currentPermutations += kTwo;
+            if ((ascending && array[j] > array[j + 1]) || (!ascending && array[j] < array[j + 1])) {
+                std::swap(array[j], array[j + 1]);
+                ++permutationsPerLoop;
             }
             ++comparisons;
         }
-        if (currentPermutations == 0) {
-            return;
-        }
+
+        permutations += permutationsPerLoop;
     }
 }
 
-void NumericArraySorting::DoStaticArray() {
-    int* array = new int[kStaticArrayLength];
-    int* arrayClone = new int[kStaticArrayLength];
+void RunSortStaticArray() {
+    int arraySelectionSort[kStaticArrayLength]{};
+    int arrayBubbleSort[kStaticArrayLength]{};
 
-    std::random_device r{};
-    std::default_random_engine randomEngine(r());
-    std::uniform_int_distribution distribution(kMinRandomValue, kMaxRandomValue);
-    for (size_t i = 0; i < kStaticArrayLength; ++i) {
-        array[i] = distribution(randomEngine);
-        arrayClone[i] = array[i];
-    }
+    FillArrayWithRandomValues(arraySelectionSort, kStaticArrayLength);
+    CopyArray(arraySelectionSort, arrayBubbleSort, kStaticArrayLength);
 
-    PrintSortedArray(array, arrayClone, kStaticArrayLength, kNonReversed);
-    PrintSortedArray(array, arrayClone, kStaticArrayLength, kNonReversed);
-    PrintSortedArray(array, arrayClone, kStaticArrayLength, kReversed);
+    size_t permutationsSelection{};
+    size_t comparisonsSelection{};
+    size_t permutationsBubble{};
+    size_t comparisonsBubble{};
 
-    delete[] array;
-    delete[] arrayClone;
+    std::cout << "Массив: ";
+    PrintArray(arraySelectionSort, kStaticArrayLength);
+
+    SelectionSort(arraySelectionSort, kStaticArrayLength, permutationsSelection, comparisonsSelection);
+    BubbleSort(arrayBubbleSort, kStaticArrayLength, permutationsBubble, comparisonsBubble);
+
+    std::cout << "Отсортированный выбором по возрастанию: ";
+    PrintArray(arraySelectionSort, kStaticArrayLength);
+    std::cout << "Отсортированный пузырьком по возрастанию: ";
+    PrintArray(arrayBubbleSort, kStaticArrayLength);
+    PrintTable(permutationsSelection, comparisonsSelection, permutationsBubble, comparisonsBubble);
+
+    std::cout << "Массив: ";
+    PrintArray(arraySelectionSort, kStaticArrayLength);
+
+    SelectionSort(arraySelectionSort, kStaticArrayLength, permutationsSelection, comparisonsSelection);
+    BubbleSort(arrayBubbleSort, kStaticArrayLength, permutationsBubble, comparisonsBubble);
+
+    std::cout << "Отсортированный выбором по возрастанию: ";
+    PrintArray(arraySelectionSort, kStaticArrayLength);
+    std::cout << "Отсортированный пузырьком по возрастанию: ";
+    PrintArray(arrayBubbleSort, kStaticArrayLength);
+    PrintTable(permutationsSelection, comparisonsSelection, permutationsBubble, comparisonsBubble);
+
+    std::cout << "Массив: ";
+    PrintArray(arraySelectionSort, kStaticArrayLength);
+
+    SelectionSort(arraySelectionSort, kStaticArrayLength, permutationsSelection, comparisonsSelection, false);
+    BubbleSort(arrayBubbleSort, kStaticArrayLength, permutationsBubble, comparisonsBubble, false);
+
+    std::cout << "Отсортированный выбором по убыванию: ";
+    PrintArray(arraySelectionSort, kStaticArrayLength);
+    std::cout << "Отсортированный пузырьком по убыванию: ";
+    PrintArray(arrayBubbleSort, kStaticArrayLength);
+    PrintTable(permutationsSelection, comparisonsSelection, permutationsBubble, comparisonsBubble);
 }
 
-void NumericArraySorting::DoDynamicArray() {
+void RunSortDynamicArray() {
     std::cout << "Введите целое натуральное число - длину массива." << std::endl;
 
     size_t arrayLength{};
@@ -130,52 +165,56 @@ void NumericArraySorting::DoDynamicArray() {
         return;
     }
 
-    int* array = new int[arrayLength];
-    int* arrayClone = new int[arrayLength];
+    int* arraySelectionSort = new int[arrayLength];
+    int* arrayBubbleSort = new int[arrayLength];
 
-    std::random_device r{};
-    std::default_random_engine randomEngine(r());
-    std::uniform_int_distribution distribution(kMinRandomValue, kMaxRandomValue);
-    for (size_t i = 0; i < arrayLength; ++i) {
-        array[i] = distribution(randomEngine);
-        arrayClone[i] = array[i];
-    }
+    FillArrayWithRandomValues(arraySelectionSort, arrayLength);
+    CopyArray(arraySelectionSort, arrayBubbleSort, arrayLength);
 
-    PrintSortedArray(array, arrayClone, arrayLength, kNonReversed);
+    size_t permutationsSelection{};
+    size_t comparisonsSelection{};
+    size_t permutationsBubble{};
+    size_t comparisonsBubble{};
 
-    delete[] array;
-    delete[] arrayClone;
+    SelectionSort(arraySelectionSort, arrayLength, permutationsSelection, comparisonsSelection, true);
+    BubbleSort(arrayBubbleSort, arrayLength, permutationsBubble, comparisonsBubble, true);
+
+    PrintTable(permutationsSelection, comparisonsSelection, permutationsBubble, comparisonsBubble);
+
+    delete[] arraySelectionSort;
+    delete[] arrayBubbleSort;
 }
 
-void NumericArraySorting::SelectTask(ArrayType task) {
+void SelectTask(ArrayType task) {
     switch (task) {
-        case NumericArraySorting::ArrayType::Static:
-            NumericArraySorting::DoStaticArray();
+        case ArrayType::Static:
+            RunSortStaticArray();
             break;
-        case NumericArraySorting::ArrayType::Dynamic:
-            NumericArraySorting::DoDynamicArray();
+        case ArrayType::Dynamic:
+            RunSortDynamicArray();
             break;
         default:
-            std::cout << "Неверный ввод.\n" << std::endl;
+            std::cout << "Такого типа массива не существует.\n" << std::endl;
             break;
     }
 }
 
-void NumericArraySorting::TaskApp() {
-    char continueEcecution = 'y';
-    while (continueEcecution == 'y') {
+void ExecuteApp() {
+    char continueExecution = 'y';
+    while (continueExecution == 'y') {
         std::cout << "Введите тип массива (число от 1 до 2), который хотите отсортировать."
                      "\n\t1. Статический массив\n\t2. Динамический массив"
                   << std::endl;
-        int input{};
-        std::cin >> input;
+        int arrayType{};
+        std::cin >> arrayType;
 
-        NumericArraySorting::SelectTask(static_cast<ArrayType>(input));
+        SelectTask(static_cast<ArrayType>(arrayType));
 
         std::cout << "Продолжить работу? (y/n)" << std::endl;
-        std::cin >> continueEcecution;
-        if (continueEcecution == 'y') {
+        std::cin >> continueExecution;
+        if (continueExecution == 'y') {
             std::cout << std::endl;
         }
     }
 }
+}  // namespace NumericArraySorting

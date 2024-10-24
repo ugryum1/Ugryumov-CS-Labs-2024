@@ -1,7 +1,7 @@
 #include "NumericArraySorting.h"
 
-int main() {
-    NumericArraySorting::TaskApp();
+int main(int, char**) {
+    NumericArraySorting::ExecuteApp();
 
     return 0;
 }
