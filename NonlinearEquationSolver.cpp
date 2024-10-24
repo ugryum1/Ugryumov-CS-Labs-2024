@@ -123,17 +123,16 @@ void SolveNewtonMethod() {
     double previousX{};
     iterations = 0;
 
-    while (std::fabs(CalculateFunction(x, coefficient)) > accuracy && iterations < kMaxSteps) {
+    while (iterations < kMaxSteps) {
         ++iterations;
         previousX = x;
         x -= CalculateFunction(x, coefficient);
+        if (std::fabs(x - previousX) < accuracy) {
+            return x;
+        }
     }
 
-    if (std::fabs(x - previousX) > kMaxDifferenceX) {
-        x = std::numeric_limits<double>::infinity();
-    }
-
-    return x;
+    return std::numeric_limits<double>::infinity();
 }
 
 [[nodiscard]] double CalculateHalfDivisionMethod(double coefficient, double accuracy, double left, double right, int& iterations) {
@@ -164,17 +163,16 @@ void SolveNewtonMethod() {
     double previousX{};
     iterations = 0;
 
-    while (std::fabs(CalculateFunction(x, coefficient)) > accuracy && iterations != kMaxSteps) {
+    while (iterations != kMaxSteps) {
         ++iterations;
         previousX = x;
         x -= CalculateFunction(x, coefficient) / CalculateFunctionDerivative(x, coefficient);
+        if (std::fabs(x - previousX) < accuracy) {
+            return x;
+        }
     }
 
-    if (std::fabs(x - previousX) > kMaxDifferenceX) {
-        x = std::numeric_limits<double>::infinity();
-    }
-
-    return x;
+    return std::numeric_limits<double>::infinity();
 }
 
 void SelectMethod(EquationMethod task) {
