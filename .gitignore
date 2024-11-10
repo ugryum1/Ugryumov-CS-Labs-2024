@@ -34,6 +34,7 @@
 *.exe
 *.out
 *.app
+*.txt
 
 ### CLion+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
