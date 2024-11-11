@@ -105,6 +105,25 @@ void StatisticTable(int keysCount) {
               << std::setw(2 * kColumnWidh) << "encryption options number" << std::setw(kColumnWidh) << "keys number" << std::setw(kColumnWidh)
               << "text length" << std::endl;
     for (size_t i = 0; i < symbols.size(); ++i) {
+        int* symbolKeysCount = new int[keysCount];
+        for (size_t j = 0; j < static_cast<size_t>(keysCount); ++j) {
+            symbolKeysCount[j] = 0;
+        }
+
+        for (size_t j = 0; j < static_cast<size_t>(text.size()); ++j) {
+            if (text[j] == symbols[i]) {
+                ++symbolKeysCount[static_cast<int>(j) % keysCount];
+            }
+        }
+
+        size_t encryptionOptionsNumber{};
+        for (size_t j = 0; j < static_cast<size_t>(keysCount); ++j) {
+            if (symbolKeysCount[j]) {
+                ++encryptionOptionsNumber;
+            }
+        }
+        delete[] symbolKeysCount;
+
         if (i % kFive == 0 && i != 0) {
             std::cout << "\nвывести ещё 5 строк таблицы? (y/n)" << std::endl;
             char input{};
@@ -120,8 +139,8 @@ void StatisticTable(int keysCount) {
             std::cout << std::setw(kColumnWidh) << symbols[i];
         }
         std::cout << std::setw(kColumnWidh) << static_cast<int>(symbols[i]) << std::setw(kColumnWidh)
-                  << std::count(text.begin(), text.end(), symbols[i]) << std::setw(2 * kColumnWidh) << '1' << std::setw(kColumnWidh) << keysCount
-                  << std::setw(kColumnWidh) << text.size() << std::endl;
+                  << std::count(text.begin(), text.end(), symbols[i]) << std::setw(2 * kColumnWidh) << encryptionOptionsNumber
+                  << std::setw(kColumnWidh) << keysCount << std::setw(kColumnWidh) << text.size() << std::endl;
     }
     std::cout << std::endl;
 }
