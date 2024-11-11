@@ -96,7 +96,7 @@ void StatisticTable(int keysCount) {
 
     std::string symbols{};
     for (char i : text) {
-        if (symbols.find(i) == std::string::npos) {
+        if (symbols.find(i) == std::string::npos && (!std::isspace(static_cast<unsigned char>(i)) || i == ' ')) {
             symbols += i;
         }
     }
@@ -129,7 +129,7 @@ void StatisticTable(int keysCount) {
             char input{};
             std::cin >> input;
             if (input != 'y') {
-                break;
+                return;
             }
         }
 
@@ -217,18 +217,5 @@ void StartProgram() {
     GetKeys(keysArray);
     StartEncryption(keysArray, keysCount);
     delete[] keysArray;
-}
-
-void ExecuteApp() {
-    char continueExecution = 'y';
-    while (continueExecution == 'y') {
-        StartProgram();
-
-        std::cout << "Продолжить работу? (y/n)" << std::endl;
-        std::cin >> continueExecution;
-        if (continueExecution == 'y') {
-            std::cout << std::endl;
-        }
-    }
 }
 }  // namespace encryption

@@ -3,6 +3,6 @@
 #include <iostream>
 
 int main(int, char**) {
-    encryption::ExecuteApp();
+    encryption::StartProgram();
     return 0;
 }
