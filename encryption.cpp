@@ -101,6 +101,8 @@ void StatisticTable(int keysCount) {
         }
     }
 
+    file.close();
+
     std::cout << std::setw(kColumnWidh) << "symbol" << std::setw(kColumnWidh) << "ASCII code" << std::setw(kColumnWidh) << "symbol count"
               << std::setw(2 * kColumnWidh) << "encryption options number" << std::setw(kColumnWidh) << "keys number" << std::setw(kColumnWidh)
               << "text length" << std::endl;
@@ -133,12 +135,7 @@ void StatisticTable(int keysCount) {
             }
         }
 
-        if (symbols[i] == '\n') {
-            std::cout << std::setw(kColumnWidh) << "\\n";
-        } else {
-            std::cout << std::setw(kColumnWidh) << symbols[i];
-        }
-        std::cout << std::setw(kColumnWidh) << static_cast<int>(symbols[i]) << std::setw(kColumnWidh)
+        std::cout << std::setw(kColumnWidh) << symbols[i] << std::setw(kColumnWidh) << static_cast<int>(symbols[i]) << std::setw(kColumnWidh)
                   << std::count(text.begin(), text.end(), symbols[i]) << std::setw(2 * kColumnWidh) << encryptionOptionsNumber
                   << std::setw(kColumnWidh) << keysCount << std::setw(kColumnWidh) << text.size() << std::endl;
     }
