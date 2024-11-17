@@ -1,8 +1,8 @@
-#include "encryption.hpp"
+#include "integralCalculation.hpp"
 
 #include <iostream>
 
 int main(int, char**) {
-    encryption::StartProgram();
+    integral::StartProgram();
     return 0;
 }
