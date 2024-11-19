@@ -218,6 +218,3 @@ _deps
 
 # Additional
 build*/
-
-.clang-format
-.clang-tidy
