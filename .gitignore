@@ -36,9 +36,9 @@
 *.app
 *.txt
 
-# Text files
-*.txt
-!CMakeLists.txt
+# # Text files
+# *.txt
+# !CMakeLists.txt
 
 ### CLion+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -218,3 +218,6 @@ _deps
 
 # Additional
 build*/
+
+.clang-format
+.clang-tidy

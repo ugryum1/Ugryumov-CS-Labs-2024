@@ -40,22 +40,22 @@ namespace integral {
 using namespace integral;
 
 double IntRect(double (*f)(double), double a, double b, double eps, int& n) {
-    double integral = 0.0;      // Начальное значение интеграла
-    double prevIntegral = 0.0;  // Предыдущее значение интеграла
-    n = 1;                      // Начинаем с одного шага
-    double dx = b - a;          // Начальная ширина шага
+    double integral = 0.0;
+    double prevIntegral = 0.0;
+    n = 1;
+    double dx = b - a;
 
     do {
-        prevIntegral = integral;  // Сохраняем предыдущее значение интеграла
+        prevIntegral = integral;
 
-        integral = 0.0;  // Обнуляем текущий интеграл
+        integral = 0.0;
         for (int i = 0; i < n; ++i) {
-            double x = a + i * dx;  // Левая граница текущего прямоугольника
-            integral += f(x) * dx;  // Добавляем площадь прямоугольника
+            double x = a + i * dx;
+            integral += f(x) * dx;
         }
 
-        n *= 2;   // Удваиваем количество шагов
-        dx /= 2;  // Уменьшаем ширину шага вдвое
+        n *= 2;
+        dx /= 2;
     } while (std::abs(integral - prevIntegral) > eps);
 
     return integral;
