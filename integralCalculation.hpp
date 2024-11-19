@@ -12,7 +12,7 @@ struct I_print {
 };
 
 double IntRect(double f, int a, int b, double eps, int *n);
-//double IntTrap(double f, int a, int b, double eps, int *n);
+double IntTrap(double f, int a, int b, double eps, int *n);
 
 void StartProgram();
 }  // namespace integral

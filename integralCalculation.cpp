@@ -4,7 +4,6 @@
 #include <cctype>
 #include <cmath>
 #include <cstdlib>
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <random>
@@ -27,11 +26,11 @@ double f4(double x) {
     return std::atan(x);
 }
 
-void PrintTabl(integral::I_print (&i_prn)[4]) {
+void PrintTabl(integral::I_print (&i_prn)[4], double eps) {
     std::cout << std::setw(12) << "Function" << std::setw(12) << "Integral" << std::setw(12) << "IntSum" << std::setw(12) << "N" << std::endl;
     for (int i = 0; i < 4; ++i) {
-        std::cout << std::setw(12) << i_prn[i].name << std::setw(12) << i_prn[i].i_toch << std::setw(12) << i_prn[i].i_sum << std::setw(12)
-                  << i_prn[i].n << std::endl;
+        std::cout << std::setw(12) << std::fixed << std::setprecision(6) << i_prn[i].name << std::setw(12) << std::fixed << std::setprecision(6)
+                  << i_prn[i].i_toch << std::setw(12) << i_prn[i].i_sum << std::setw(12) << i_prn[i].n << std::endl;
     }
     std::cout << std::endl;
 }
@@ -41,42 +40,47 @@ namespace integral {
 using namespace integral;
 
 double IntRect(double (*f)(double), double a, double b, double eps, int& n) {
-    n = 1;
-    double dx, sumNew, sum, x;
-    sum = 1000;
-    sumNew = 1005;
-    while (std::abs(sumNew - sum) > eps) {
-        sumNew = sum;
-        x = a;
-        dx = (b - a) / n;
-        sum = 0;
-        for (long long i = 0; i < n; i++) {
-            sum += f(x + dx / 2);
-            x += dx;
+    double integral = 0.0;      // Начальное значение интеграла
+    double prevIntegral = 0.0;  // Предыдущее значение интеграла
+    n = 1;                      // Начинаем с одного шага
+    double dx = b - a;          // Начальная ширина шага
+
+    do {
+        prevIntegral = integral;  // Сохраняем предыдущее значение интеграла
+
+        integral = 0.0;  // Обнуляем текущий интеграл
+        for (int i = 0; i < n; ++i) {
+            double x = a + i * dx;  // Левая граница текущего прямоугольника
+            integral += f(x) * dx;  // Добавляем площадь прямоугольника
         }
-        sum *= dx;
-        n *= 2;
-    }
-    n = n / 4;
-    return sum;
+
+        n *= 2;   // Удваиваем количество шагов
+        dx /= 2;  // Уменьшаем ширину шага вдвое
+    } while (std::abs(integral - prevIntegral) > eps);
+
+    return integral;
 }
 
 double IntTrap(double (*f)(double), double a, double b, double eps, int& n) {
-    n = 2;
-    double dx = (b - a) / n;
-    double sum = 0, sumNew = 0;
+    double integral = 0.0;
+    double prevIntegral = 0.0;
+    n = 1;
+    double dx = b - a;
+
     do {
-        sumNew = sum;
-        sum = 0;
-        n *= 2;
-        dx = (b - a) / n;
-        for (size_t step = 0; step < n; step++) {
-            double x1 = a + step * dx;
-            double x2 = a + (step + 1) * dx;
-            sum += 0.5 * (x2 - x1) * (f(x1) + f(x2));
+        prevIntegral = integral;
+
+        integral = 0.0;
+        for (int i = 0; i < n; ++i) {
+            double x = a + i * dx;
+            integral += (f(x) + f(x + dx)) * dx / 2;
         }
-    } while (fabs(sumNew - sum) > eps);
-    return sum;
+
+        n *= 2;
+        dx /= 2;
+    } while (std::abs(integral - prevIntegral) > eps);
+
+    return integral;
 }
 
 void StartProgram() {
@@ -113,16 +117,16 @@ void StartProgram() {
         i_prn[3].i_sum = IntRect(f4, a, b, eps, n);
         i_prn[3].n = n;
 
-        std::cout << "Метод прямоугольников. eps = " << eps << std::endl;
-        PrintTabl(i_prn);
+        std::cout << "Метод прямоугольников. eps = " << std::resetiosflags(std::ios::fixed) << eps << std::endl;
+        PrintTabl(i_prn, eps);
 
         i_prn[0].i_sum = IntTrap(f1, a, b, eps, n);
         i_prn[1].i_sum = IntTrap(f2, a, b, eps, n);
         i_prn[2].i_sum = IntTrap(f3, a, b, eps, n);
         i_prn[3].i_sum = IntTrap(f4, a, b, eps, n);
 
-        std::cout << "Метод трапеций. eps = " << eps << std::endl;
-        PrintTabl(i_prn);
+        std::cout << "Метод трапеций. eps = " << std::resetiosflags(std::ios::fixed) << eps << std::endl;
+        PrintTabl(i_prn, eps);
 
         eps /= 10;
     }
