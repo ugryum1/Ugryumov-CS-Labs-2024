@@ -218,3 +218,5 @@ _deps
 
 # Additional
 build*/
+
+.vscode
