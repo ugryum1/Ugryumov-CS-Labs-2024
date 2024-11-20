@@ -26,7 +26,7 @@ double f4(double x) {
     return std::atan(x);
 }
 
-void PrintTabl(integral::I_print (&i_prn)[4], double eps) {
+void PrintTabl(integral::I_print (&i_prn)[4]) {
     std::cout << std::setw(12) << "Function" << std::setw(12) << "Integral" << std::setw(12) << "IntSum" << std::setw(12) << "N" << std::endl;
     for (int i = 0; i < 4; ++i) {
         std::cout << std::setw(12) << std::fixed << std::setprecision(6) << i_prn[i].name << std::setw(12) << std::fixed << std::setprecision(6)
@@ -118,7 +118,7 @@ void StartProgram() {
         i_prn[3].n = n;
 
         std::cout << "Метод прямоугольников. eps = " << std::resetiosflags(std::ios::fixed) << eps << std::endl;
-        PrintTabl(i_prn, eps);
+        PrintTabl(i_prn);
 
         i_prn[0].i_sum = IntTrap(f1, a, b, eps, n);
         i_prn[1].i_sum = IntTrap(f2, a, b, eps, n);
@@ -126,7 +126,7 @@ void StartProgram() {
         i_prn[3].i_sum = IntTrap(f4, a, b, eps, n);
 
         std::cout << "Метод трапеций. eps = " << std::resetiosflags(std::ios::fixed) << eps << std::endl;
-        PrintTabl(i_prn, eps);
+        PrintTabl(i_prn);
 
         eps /= 10;
     }
