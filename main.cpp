@@ -3,6 +3,6 @@
 #include <iostream>
 
 int main(int, char**) {
-    integral::StartProgram();
+    matrix::StartProgram();
     return 0;
 }
