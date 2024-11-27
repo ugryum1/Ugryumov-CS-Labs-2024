@@ -18,7 +18,19 @@ double **AllocateMatrix(int n, int m) {
   return matrix;
 }
 
-void PrintMatrix(int n, int m, int precision, double **matrix, int format) {
+void DeleteMatrix(double **matrix, int n, int m) {
+  if (matrix != nullptr) {
+    for (int i = 0; i < n; ++i) {
+      if (matrix[i] != nullptr) {
+        delete[] matrix[i];
+      }
+    }
+    delete[] matrix;
+    matrix = nullptr;
+  }
+}
+
+void PrintMatrix(double **matrix, int n, int m, int precision, int format) {
   if (format == 1) {
     std::cout << std::fixed;
   } else if (format == 2) {
@@ -80,7 +92,7 @@ void PrintMatrix(int *pointerB[], int size) {
 namespace matrix {
 using namespace matrix;
 
-void FillMatrixA(int n, int m, double **A) {
+void FillMatrixA(double **A, int n, int m) {
   double x = 1.0;
 
   for (int i = 0; i < n; ++i) {
@@ -128,18 +140,11 @@ void StartProgram() {
 
   double **A = AllocateMatrix(n, m);
 
-  FillMatrixA(n, m, A);
+  FillMatrixA(A, n, m);
   std::cout << "Матрица A:\n\n";
-  PrintMatrix(n, m, precision, A, format);
+  PrintMatrix(A, n, m, precision, format);
 
-  if (A != nullptr) {
-    for (int i = 0; i < n; ++i) {
-      if (A[i] != nullptr) {
-        delete[] A[i];
-      }
-    }
-    delete[] A;
-  }
+  DeleteMatrix(A, n, m);
 
   int B[10][10];
   int *pointerB[10];
