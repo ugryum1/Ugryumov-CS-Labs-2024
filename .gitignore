@@ -217,3 +217,5 @@ _deps
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudiocode,clion+all,cmake,jetbrains+all
 
 # Additional
+
+a.out
