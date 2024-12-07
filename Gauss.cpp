@@ -59,7 +59,6 @@ void print_matrix(std::vector<std::vector<double>> &matrix, int n, int m) {
     std::cout.unsetf(std::ios_base::fixed);
 }
 
-
 std::vector<std::vector<double>> multiply_matrices(std::vector<std::vector<double>> &matrix, std::vector<std::vector<double>> &inverse_matrix, int n)
 {
     std::vector<std::vector<double>> result(n, std::vector<double>(n, 0.0));
