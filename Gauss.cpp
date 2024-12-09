@@ -39,7 +39,7 @@ void print_matrix(std::vector<std::vector<double>> &matrix, int n, int m) {
         for (int i = 0; i < n; ++i) {
             for (int j = k; j < k + columnNumber; ++j) {
                 if (j < m) {
-                    std::cout << std::setw(columnWidth) << std::setprecision(precision) << matrix[i][j];
+                    std::cout << std::fixed << std::setw(columnWidth) << std::setprecision(precision) << matrix[i][j];
                 } else {
                     break;
                 }
@@ -49,10 +49,11 @@ void print_matrix(std::vector<std::vector<double>> &matrix, int n, int m) {
 
         k += columnNumber;
 
-        for (int i = 0; i < 80; ++i) {
-            if (k < m) {
+        if (k < m) {
+            for (int i = 0; i < 80; ++i) {
                 std::cout << "-";
             }
+            std::cout << std::endl;
         }
     }
 
@@ -154,18 +155,18 @@ int main() {
     std::vector<std::vector<double>> inverse_matrix = create_unit_matrix(n);
 
     std::cout << "\nИсходная матрица:" << std::endl;
-    std::vector<std::vector<double>> matrix1 = merging_matrices(matrix, inverse_matrix, n);
-    print_matrix(matrix1, n, 2 * n);
+    std::vector<std::vector<double>> extended_matrix = merging_matrices(matrix, inverse_matrix, n);
+    print_matrix(extended_matrix, n, 2 * n);
 
     straignt_step(matrix, inverse_matrix, x, n);
     std::cout << "\nМатрица после прямого хода:" << std::endl;
-    std::vector<std::vector<double>> matrix2 = merging_matrices(matrix, inverse_matrix, n);
-    print_matrix(matrix2, n, 2 * n);
+    extended_matrix = merging_matrices(matrix, inverse_matrix, n);
+    print_matrix(extended_matrix, n, 2 * n);
 
     reverse_step(matrix, inverse_matrix, x, n);
     std::cout << "\nМатрица после обратного хода:" << std::endl;
-    std::vector<std::vector<double>> matrix3 = merging_matrices(matrix, inverse_matrix, n);
-    print_matrix(matrix3, n, 2 * n);
+    extended_matrix = merging_matrices(matrix, inverse_matrix, n);
+    print_matrix(extended_matrix, n, 2 * n);
 
     std::cout << "\nМатрица, обратная исходной:" << std::endl;
     print_matrix(inverse_matrix, n, n);
